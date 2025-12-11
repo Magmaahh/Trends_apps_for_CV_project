@@ -1,0 +1,17 @@
+name: deepfake_cv_env
+channels:
+  - conda-forge
+  - pytorch
+  - defaults
+dependencies:
+  # --- System & Python Version (Cruciale per MFA) ---
+  - python=3.10
+  - ffmpeg
+  
+  # --- Montreal Forced Aligner (Installato via Conda è più stabile) ---
+  - montreal-forced-aligner
+  
+  # --- Pip manager ---
+  - pip
+  - pip:
+    - -r requirements.txt

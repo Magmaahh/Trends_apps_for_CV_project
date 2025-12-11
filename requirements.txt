@@ -1,0 +1,21 @@
+# --- Core ML & Computer Vision ---
+torch>=2.0.0
+torchvision>=0.15.0
+torchaudio>=2.0.0
+opencv-python>=4.8.0
+mediapipe>=0.10.0
+numpy>=1.24.0
+
+# --- Audio & Transcription ---
+openai-whisper
+pydub
+textgrid  # Per leggere l'output di MFA
+
+# --- Utilities ---
+tqdm
+scipy     # Per la Cosine Similarity
+
+# --- Visualization & Analysis ---
+scikit-learn  # Per t-SNE
+matplotlib
+seaborn
