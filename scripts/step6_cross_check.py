@@ -1,101 +1,141 @@
 import os
 import json
 import numpy as np
+import argparse
 from scipy.spatial.distance import cosine
 import matplotlib.pyplot as plt
 import seaborn as sns
+from tqdm import tqdm
 
 # --- CONFIGURAZIONE ---
-GOLD_DICT_PATH = "dataset/output/gold_store/s1_gold_dictionary.json"     # La verità (Speaker 1)
-ATTACKER_FOLDER = "dataset/output/video_embeddings_s2"      # L'impostore (Speaker 2)
+DATASET_OUTPUT = "dataset/output"
+GOLD_STORE_DIR = os.path.join(DATASET_OUTPUT, "gold_store")
 
-def cross_identity_test():
-    print(f"--- TEST DI SICUREZZA: S2 vs S1 GOLD ---")
+def cross_identity_test(target_speaker="s1"):
+    print(f"--- TEST DI SICUREZZA: {target_speaker} vs TUTTI ---")
     
-    # 1. Carichiamo il profilo di S1
-    if not os.path.exists(GOLD_DICT_PATH):
-        print("Errore: Manca il Gold Dictionary di S1!")
+    # 1. Carichiamo il profilo del Target
+    gold_path = os.path.join(GOLD_STORE_DIR, f"{target_speaker}_gold_dictionary.json")
+    if not os.path.exists(gold_path):
+        print(f"Errore: Manca il Gold Dictionary per {target_speaker}!")
+        print(f"Hai lanciato lo step 4 per {target_speaker}?")
         return
 
-    with open(GOLD_DICT_PATH, "r") as f:
+    with open(gold_path, "r") as f:
         gold_dict = json.load(f)
     
     # Ottimizzazione lookup
     gold_vectors = {ph: np.array(data["vector"]) for ph, data in gold_dict.items()}
+    print(f"Target {target_speaker} caricato: {len(gold_vectors)} fonemi.")
 
-    # 2. Carichiamo i video di S2
-    if not os.path.exists(ATTACKER_FOLDER):
-        print("Errore: Manca la cartella embeddings di S2. Hai lanciato lo step 2?")
-        return
-
-    files = [f for f in os.listdir(ATTACKER_FOLDER) if f.endswith('.npz')]
-    print(f"Analizzo {len(files)} video dell'impostore...")
+    # 2. Troviamo tutti gli altri speaker (Impostori)
+    # Cerca cartelle video_embeddings_s*
+    embedding_folders = [d for d in os.listdir(DATASET_OUTPUT) 
+                         if os.path.isdir(os.path.join(DATASET_OUTPUT, d)) 
+                         and d.startswith("video_embeddings_s")]
     
-    # Ne testiamo 50 a caso per avere statistica solida
-    np.random.shuffle(files)
-    test_files = files[:50] 
+    impostor_scores = {} # { "s2": [score1, score2...], "s3": [...] }
     
-    all_scores = []
+    print(f"Confronto con {len(embedding_folders)} potenziali impostori...")
 
-    for filename in test_files:
-        path = os.path.join(ATTACKER_FOLDER, filename)
-        try:
-            data = np.load(path)
-        except: continue
+    for folder in tqdm(embedding_folders):
+        speaker_id = folder.split("_")[-1] # video_embeddings_s2 -> s2
         
-        video_scores = []
-        for phoneme, embeddings in data.items():
-            # Confrontiamo solo i fonemi che esistono nel dizionario di S1
-            if phoneme in gold_vectors:
-                target_vec = gold_vectors[phoneme]
-                for vec in embeddings:
-                    # Similarity
-                    sim = 1 - cosine(vec, target_vec)
-                    video_scores.append(sim)
-
-        if video_scores:
-            avg_video = np.mean(video_scores)
-            all_scores.append(avg_video)
-
-    if not all_scores:
-        print("Nessun dato valido trovato.")
-        return
+        # Saltiamo se stesso (o lo usiamo come baseline self-test)
+        is_self = (speaker_id == target_speaker)
+        
+        input_folder = os.path.join(DATASET_OUTPUT, folder)
+        files = [f for f in os.listdir(input_folder) if f.endswith('.npz')]
+        
+        # Prendiamo un campione casuale di 20 video per speaker per velocità
+        if len(files) > 20:
+            np.random.shuffle(files)
+            files = files[:20]
+            
+        scores_for_this_speaker = []
+        
+        for filename in files:
+            path = os.path.join(input_folder, filename)
+            try:
+                data = np.load(path)
+            except: continue
+            
+            video_scores = []
+            for phoneme, embeddings in data.items():
+                if phoneme in gold_vectors:
+                    target_vec = gold_vectors[phoneme]
+                    for vec in embeddings:
+                        sim = 1 - cosine(vec, target_vec)
+                        video_scores.append(sim)
+            
+            if video_scores:
+                scores_for_this_speaker.append(np.mean(video_scores))
+        
+        if scores_for_this_speaker:
+            avg = np.mean(scores_for_this_speaker)
+            impostor_scores[speaker_id] = scores_for_this_speaker
+            # print(f"  -> {speaker_id}: {avg:.4f}")
 
     # --- RISULTATI ---
-    mean_score = np.mean(all_scores)
-    max_score = np.max(all_scores)
-    min_score = np.min(all_scores)
-    
     print("\n" + "="*40)
-    print(f"RISULTATI CROSS-TEST (S1 vs S2)")
+    print(f"RISULTATI ONE-VS-ALL ({target_speaker})")
     print("="*40)
-    print(f"BASELINE S1 (Target): ~0.9485")
-    print(f"IMPOSTORE S2 (Score): {mean_score:.4f}")
-    print(f"GAP DI SICUREZZA:     {0.9485 - mean_score:.4f}")
+    
+    # Separiamo Self da Impostors
+    self_scores = impostor_scores.get(target_speaker, [])
+    others_flat = []
+    
+    if self_scores:
+        print(f"✅ SELF-TEST ({target_speaker}): {np.mean(self_scores):.4f}")
+    else:
+        print(f"⚠️ SELF-TEST ({target_speaker}): N/A (Nessun video trovato?)")
+
+    print("-" * 40)
+    print(f"{'SPEAKER':<10} | {'SCORE':<10} | {'STATUS'}")
     print("-" * 40)
     
-    # Interpretazione
-    if mean_score < 0.80:
-        print("✅ SUCCESSO: Identità diverse distinte correttamente.")
-        print("   Il sistema rileva che S2 muove la bocca diversamente da S1.")
-    elif mean_score < 0.90:
-        print("⚠️ ZONA GRIGIA: C'è differenza, ma non enorme.")
-        print("   Potrebbe servire addestramento per accentuare le differenze.")
-    else:
-        print("❌ FALLIMENTO: Il sistema non distingue S1 da S2.")
-        print("   La ResNet sta guardando caratteristiche generiche (bocca aperta/chiusa)")
-        print("   invece dell'identità specifica del movimento.")
+    sorted_speakers = sorted(impostor_scores.keys(), key=lambda x: int(x[1:]) if x[1:].isdigit() else 999)
+    
+    for spk in sorted_speakers:
+        if spk == target_speaker: continue
+        
+        scores = impostor_scores[spk]
+        avg = np.mean(scores)
+        others_flat.extend(scores)
+        
+        status = "✅ BLOCKED" if avg < 0.75 else "❌ PASSED"
+        print(f"{spk:<10} | {avg:.4f}     | {status}")
 
-    # Plot della distribuzione (Opzionale)
-    plt.figure(figsize=(10, 6))
-    sns.histplot(all_scores, kde=True, color="red", label="Impostore (S2)")
-    # Linea fittizia per S1 (basata sul tuo test precedente)
-    plt.axvline(x=0.9485, color='blue', linestyle='--', label="Target Reale (S1)")
-    plt.title("Distribuzione Score: Reale vs Impostore")
-    plt.legend()
+    print("-" * 40)
+    
+    if others_flat:
+        avg_impostor = np.mean(others_flat)
+        print(f"MEDIA IMPOSTORI: {avg_impostor:.4f}")
+        if self_scores:
+            print(f"GAP SICUREZZA:   {np.mean(self_scores) - avg_impostor:.4f}")
+
+    # --- PLOT ---
+    plt.figure(figsize=(12, 6))
+    
+    # Plot Impostors
+    for spk, scores in impostor_scores.items():
+        if spk == target_speaker: continue
+        sns.kdeplot(scores, label=spk, fill=True, alpha=0.1)
+        
+    # Plot Target (più evidente)
+    if self_scores:
+        sns.kdeplot(self_scores, label=f"TARGET ({target_speaker})", color="blue", linewidth=3, fill=False)
+        
+    plt.title(f"Distribuzione Score: {target_speaker} vs Altri")
     plt.xlabel("Cosine Similarity")
-    plt.savefig("cross_identity_result.png")
-    print("Grafico salvato in cross_identity_result.png")
+    plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+    plt.tight_layout()
+    plt.savefig("cross_check_result.png")
+    print("\nGrafico salvato in cross_check_result.png")
 
 if __name__ == "__main__":
-    cross_identity_test()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--target", type=str, default="s1", help="Speaker ID da proteggere (es. s1)")
+    args = parser.parse_args()
+    
+    cross_identity_test(args.target)
