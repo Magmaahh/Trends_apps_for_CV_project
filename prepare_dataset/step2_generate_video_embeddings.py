@@ -203,4 +203,4 @@ def main():
         process_single_speaker(spk)
 
 if __name__ == "__main__":
-    process_video_phonemes()
+    main()
