@@ -11,8 +11,8 @@ from typing import Dict, List
 import numpy as np
 from tqdm import tqdm
 
-from src.deepfake_cv.pipeline import VideoPipeline
-from src.deepfake_cv.utils import aggregate_embeddings
+from src.video.pipeline import VideoPipeline
+from src.video.utils import aggregate_embeddings
 
 
 def run_mfa_batch(wav_dir: Path, mfa_dict: Path, mfa_acoustic: Path, output_dir: Path) -> Path:

@@ -3,8 +3,8 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from src.deepfake_cv.matcher import IdentityMatcher
-from src.deepfake_cv.pipeline import VideoPipeline
+from src.video.matcher import IdentityMatcher
+from src.video.pipeline import VideoPipeline
 
 
 def audit_video(video_path: Path, gold_json: Path, mfa_dict: Path, mfa_acoustic: Path, threshold: float, device: str):
