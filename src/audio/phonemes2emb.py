@@ -220,7 +220,7 @@ if __name__ == "__main__":
     output_file = "voice_profile_s1.npz" #TODO salvare in una cartella specifica
     
     # Check if folders exist
-    if os.path.exists(audio_folder) and os.path.exists(textgrid_folder):cd
+    if os.path.exists(audio_folder) and os.path.exists(textgrid_folder):
         # Extract the voice profile
         stats = extractor.extract_voice_profile(audio_folder, textgrid_folder, output_file)
         
