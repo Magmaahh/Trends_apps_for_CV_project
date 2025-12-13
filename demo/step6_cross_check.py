@@ -6,12 +6,16 @@ from scipy.spatial.distance import cosine
 import matplotlib.pyplot as plt
 import seaborn as sns
 from tqdm import tqdm
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
+from data_preparation.config import DATASET_OUTPUT, GOLD_STORE_DIR, DEVICE
+from data_preparation.model import VideoEmbeddingAdapter
+import torch
 # --- CONFIGURAZIONE ---
-DATASET_OUTPUT = "dataset/output"
-GOLD_STORE_DIR = os.path.join(DATASET_OUTPUT, "gold_store")
 
-def cross_identity_test(target_speaker="s1"):
+
+def cross_identity_test(target_speaker="s1", adapter_path=None):
     print(f"--- TEST DI SICUREZZA: {target_speaker} vs TUTTI ---")
     
     # 1. Carichiamo il profilo del Target
@@ -37,6 +41,14 @@ def cross_identity_test(target_speaker="s1"):
     impostor_scores = {} # { "s2": [score1, score2...], "s3": [...] }
     
     print(f"Confronto con {len(embedding_folders)} potenziali impostori...")
+
+    # Load Adapter
+    adapter = None
+    if adapter_path:
+        print(f"Loading adapter from {adapter_path}...")
+        adapter = VideoEmbeddingAdapter().to(DEVICE)
+        adapter.load_state_dict(torch.load(adapter_path, map_location=DEVICE))
+        adapter.eval()
 
     for folder in tqdm(embedding_folders):
         speaker_id = folder.split("_")[-1] # video_embeddings_s2 -> s2
@@ -64,6 +76,13 @@ def cross_identity_test(target_speaker="s1"):
             for phoneme, embeddings in data.items():
                 if phoneme in gold_vectors:
                     target_vec = gold_vectors[phoneme]
+                    
+                    # Apply adapter if present
+                    if adapter:
+                        tensor_in = torch.tensor(embeddings, dtype=torch.float32).to(DEVICE)
+                        with torch.no_grad():
+                            embeddings = adapter(tensor_in).cpu().numpy()
+
                     for vec in embeddings:
                         sim = 1 - cosine(vec, target_vec)
                         video_scores.append(sim)
@@ -136,6 +155,7 @@ def cross_identity_test(target_speaker="s1"):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--target", type=str, default="s1", help="Speaker ID da proteggere (es. s1)")
+    parser.add_argument("--adapter", type=str, help="Path to trained adapter model (.pth)")
     args = parser.parse_args()
     
-    cross_identity_test(args.target)
+    cross_identity_test(args.target, args.adapter)

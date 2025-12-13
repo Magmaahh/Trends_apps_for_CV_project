@@ -8,8 +8,8 @@ import torch
 from pathlib import Path
 from tqdm import tqdm
 
-from config import *
-from model import MouthEmbeddingResNet3D
+from data_preparation.config import *
+from data_preparation.model import MouthEmbeddingResNet3D, VideoEmbeddingAdapter
 
 # GRID filename decoding
 def decode_grid_filename(stem: str):
@@ -129,9 +129,17 @@ def extract_embeddings_for_speaker(speaker_id):
 
     os.makedirs(out_dir, exist_ok=True)
 
-    for tg_file in tqdm(os.listdir(tg_dir), desc=speaker_id):
-        if not tg_file.endswith(".TextGrid"):
-            continue
+    # Check if already processed (folder level check)
+    existing_npz = list(Path(out_dir).glob("*.npz"))
+    if len(existing_npz) >= 200:
+        print(f"SKIP: {speaker_id} già processato ({len(existing_npz)} embeddings trovati).")
+        return
+
+    tg_files = [f for f in os.listdir(tg_dir) if f.endswith(".TextGrid")]
+    tg_files.sort()
+    tg_files = tg_files[:200] # LIMIT TO 200 VIDEOS
+
+    for tg_file in tqdm(tg_files, desc=speaker_id):
 
         file_id = tg_file.replace(".TextGrid", "")
         video_path = None
@@ -202,7 +210,7 @@ def extract_embeddings_for_speaker(speaker_id):
             )
 
 # Gold dictionary
-def build_gold_dictionary_for_speaker(speaker_id):
+def build_gold_dictionary_for_speaker(speaker_id, adapter_path=None):
     """
     Builds a mean gold embedding per phoneme for one speaker.
     """
@@ -211,12 +219,25 @@ def build_gold_dictionary_for_speaker(speaker_id):
     os.makedirs(gold_dir, exist_ok=True)
 
     accumulator = {}
+    
+    # Load Adapter if provided
+    adapter = None
+    if adapter_path:
+        print(f"Loading adapter from {adapter_path}...")
+        adapter = VideoEmbeddingAdapter(EMBEDDING_DIM).to(DEVICE)
+        adapter.load_state_dict(torch.load(adapter_path, map_location=DEVICE))
+        adapter.eval()
 
     for f in os.listdir(emb_dir):
         if not f.endswith(".npz"):
             continue
         data = np.load(os.path.join(emb_dir, f))
         for phoneme, vecs in data.items():
+            # Apply adapter if present
+            if adapter:
+                tensor_in = torch.tensor(vecs, dtype=torch.float32).to(DEVICE)
+                with torch.no_grad():
+                    vecs = adapter(tensor_in).cpu().numpy()
             accumulator.setdefault(phoneme, []).extend(vecs)
 
     gold = {}

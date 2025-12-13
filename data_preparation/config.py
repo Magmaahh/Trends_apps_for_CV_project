@@ -3,6 +3,7 @@ import torch
 # Dataset paths
 DATASET_INIT = "dataset/init"
 DATASET_OUTPUT = "dataset/output"
+GOLD_STORE_DIR = "dataset/output/gold_store"
 
 # Device
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
