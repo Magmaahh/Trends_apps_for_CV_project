@@ -191,8 +191,8 @@ def main():
     # ========================================================================
     # CONFIGURE FILE PATHS HERE
     # ========================================================================
-    file1 = Path("../signatures/s1/voice_profile_s1.npz")
-    file2 = Path("../test/s1/voice_sig.npz")
+    file1 = Path("signatures/s1/voice_profile_s1.npz")
+    file2 = Path("samples/s1/voice_sig.npz")
     # ========================================================================
     
     # Check if files exist
