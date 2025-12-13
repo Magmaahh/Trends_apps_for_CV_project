@@ -217,10 +217,10 @@ if __name__ == "__main__":
     # Define input folders and output file
     audio_folder = os.path.join(os.path.dirname(__file__), "../../dataset/output/mfa_workspace_s1")          # Folder with .wav files
     textgrid_folder = os.path.join(os.path.dirname(__file__), "../../dataset/output/mfa_output_phonemes_s1")   # Folder with .TextGrid files
-    output_file = "voice_profile_s1.npz" # Output file with the voice profile
+    output_file = "voice_profile_s1.npz" #TODO salvare in una cartella specifica
     
     # Check if folders exist
-    if os.path.exists(audio_folder) and os.path.exists(textgrid_folder):
+    if os.path.exists(audio_folder) and os.path.exists(textgrid_folder):cd
         # Extract the voice profile
         stats = extractor.extract_voice_profile(audio_folder, textgrid_folder, output_file)
         
