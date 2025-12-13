@@ -104,6 +104,89 @@ def compare_embeddings(
     return similarities, global_sim, list(phonemes_only_in_1), list(phonemes_only_in_2)
 
 
+def compute_confidence_and_verdict(similarities: Dict[str, float]) -> Dict[str, any]:
+    """
+    Compute confidence level and verdict based on similarity scores.
+    Primary criterion: percentage of phonemes with similarity ≥ 0.9
+    
+    Args:
+        similarities: Dictionary of per-phoneme similarities
+        
+    Returns:
+        Dictionary with confidence metrics and verdict
+    """
+    if not similarities:
+        return {
+            "verdict": "INSUFFICIENT DATA",
+            "confidence": "N/A",
+            "confidence_score": 0.0,
+            "match_probability": 0.0,
+            "excellent_count": 0,
+            "excellent_percentage": 0.0,
+            "weighted_score": 0.0
+        }
+    
+    total_phonemes = len(similarities)
+    
+    # Count phonemes by category (primary focus on ≥0.9)
+    excellent = sum(1 for s in similarities.values() if s >= 0.9)
+    acceptable = sum(1 for s in similarities.values() if 0.8 <= s < 0.9)
+    questionable = sum(1 for s in similarities.values() if 0.5 <= s < 0.8)
+    poor = sum(1 for s in similarities.values() if s < 0.5)
+    
+    # Calculate percentages
+    excellent_pct = (excellent / total_phonemes) * 100
+    
+    # Weighted score (≥0.9 has much higher weight)
+    weighted_score = 0.0
+    for sim in similarities.values():
+        if sim >= 0.9:
+            weighted_score += 1.0  # Full weight
+        elif sim >= 0.8:
+            weighted_score += 0.3  # Minor contribution
+        elif sim >= 0.5:
+            weighted_score += 0.1  # Very minor contribution
+        # <0.5 contributes 0
+    
+    weighted_score = (weighted_score / total_phonemes) * 100
+    
+    # Determine confidence level based on excellent phonemes percentage
+    if excellent_pct >= 70:
+        confidence = "HIGH"
+        confidence_score = 3
+        match_probability = min(85 + (excellent_pct - 70) * 0.5, 99)
+        verdict = "SAME PERSON"
+    elif excellent_pct >= 40:
+        confidence = "MEDIUM"
+        confidence_score = 2
+        match_probability = 50 + (excellent_pct - 40) * 1.0
+        verdict = "LIKELY SAME PERSON"
+    elif excellent_pct >= 20:
+        confidence = "LOW"
+        confidence_score = 1
+        match_probability = 25 + (excellent_pct - 20) * 1.0
+        verdict = "UNCERTAIN"
+    else:
+        confidence = "VERY LOW"
+        confidence_score = 0
+        match_probability = excellent_pct
+        verdict = "DIFFERENT PERSON"
+    
+    return {
+        "verdict": verdict,
+        "confidence": confidence,
+        "confidence_score": confidence_score,
+        "match_probability": match_probability,
+        "excellent_count": excellent,
+        "excellent_percentage": excellent_pct,
+        "acceptable_count": acceptable,
+        "questionable_count": questionable,
+        "poor_count": poor,
+        "weighted_score": weighted_score,
+        "total_phonemes": total_phonemes
+    }
+
+
 def print_results(
     similarities: Dict[str, float],
     global_similarity: float,
@@ -113,25 +196,39 @@ def print_results(
     file2_name: str
 ) -> None:
     """
-    Pretty print similarity results.
+    Pretty print similarity results with focus on ≥0.9 similarity threshold.
     
     Args:
         similarities: Dictionary of per-phoneme similarities
         global_similarity: Overall similarity score
         only_in_1: Phonemes only in first file
         only_in_2: Phonemes only in second file
-        file1_name: Name of first file
-        file2_name: Name of second file
+        file1_name: Name of first file (reference signature)
+        file2_name: Name of second file (sample to verify)
     """
     print("=" * 80)
-    print(f"COSINE SIMILARITY COMPARISON")
+    print(f"🔍 IDENTITY VERIFICATION ANALYSIS")
     print("=" * 80)
-    print(f"File 1: {file1_name}")
-    print(f"File 2: {file2_name}")
+    print(f"Reference: {file1_name}")
+    print(f"Sample:    {file2_name}")
     print()
     
-    print(f"GLOBAL SIMILARITY: {global_similarity:.4f}")
-    print(f"Common phonemes analyzed: {len(similarities)}")
+    # Compute confidence and verdict
+    metrics = compute_confidence_and_verdict(similarities)
+    
+    # Print prominent verdict section
+    print("━" * 80)
+    print(f"🎯 VERDICT: {metrics['verdict']}")
+    print("━" * 80)
+    
+    # Confidence stars
+    stars = "★" * metrics['confidence_score'] + "☆" * (3 - metrics['confidence_score'])
+    
+    print(f"Confidence Level:  {stars} {metrics['confidence']} ({metrics['excellent_percentage']:.1f}%)")
+    print(f"Match Probability: {metrics['match_probability']:.1f}%")
+    print(f"Reliable Matches:  {metrics['excellent_count']}/{metrics['total_phonemes']} phonemes (≥0.9 similarity)")
+    print(f"Weighted Score:    {metrics['weighted_score']:.1f}/100")
+    print("━" * 80)
     print()
     
     if similarities:
@@ -142,44 +239,45 @@ def print_results(
             reverse=True
         )
         
-        print("PER-PHONEME SIMILARITIES (sorted by score):")
+        print("DETAILED PHONEME ANALYSIS:")
         print("-" * 80)
         for phoneme, sim in sorted_phonemes:
-            # Visual indicator
+            # Visual indicator and category
             if sim >= 0.9:
-                indicator = "✓✓✓"  # Excellent
-            elif sim >= 0.75:
-                indicator = "✓✓ "  # Good
+                indicator = "🟢"
+                category = "[EXCELLENT - HIGH CONFIDENCE]"
+            elif sim >= 0.8:
+                indicator = "🟡"
+                category = "[ACCEPTABLE - MINOR WEIGHT]"
             elif sim >= 0.5:
-                indicator = "✓  "  # Moderate
-            elif sim >= 0.25:
-                indicator = "~  "  # Low
+                indicator = "🟠"
+                category = "[QUESTIONABLE - MINIMAL WEIGHT]"
             else:
-                indicator = "✗  "  # Poor
+                indicator = "🔴"
+                category = "[POOR - NO WEIGHT]"
             
-            print(f"  {indicator} {phoneme:8s}: {sim:7.4f}")
+            print(f"  {indicator} {phoneme:8s}: {sim:7.4f}  {category}")
         
         print()
         
-        # Statistics
-        high_sim = sum(1 for s in similarities.values() if s >= 0.75)
-        medium_sim = sum(1 for s in similarities.values() if 0.5 <= s < 0.75)
-        low_sim = sum(1 for s in similarities.values() if s < 0.5)
-        
-        print("STATISTICS:")
-        print(f"  High similarity (≥ 0.75):   {high_sim} phonemes")
-        print(f"  Medium similarity (0.5-0.75): {medium_sim} phonemes")
-        print(f"  Low similarity (< 0.5):      {low_sim} phonemes")
+        # Enhanced statistics focused on 0.9 threshold
+        print("STATISTICS BREAKDOWN:")
+        print(f"  🟢 Excellent (≥ 0.9):      {metrics['excellent_count']:3d} phonemes ({metrics['excellent_percentage']:5.1f}%) [PRIMARY CRITERION]")
+        print(f"  🟡 Acceptable (0.8-0.9):   {metrics['acceptable_count']:3d} phonemes ({(metrics['acceptable_count']/metrics['total_phonemes'])*100:5.1f}%) [Minor weight]")
+        print(f"  🟠 Questionable (0.5-0.8): {metrics['questionable_count']:3d} phonemes ({(metrics['questionable_count']/metrics['total_phonemes'])*100:5.1f}%) [Minimal weight]")
+        print(f"  🔴 Poor (< 0.5):           {metrics['poor_count']:3d} phonemes ({(metrics['poor_count']/metrics['total_phonemes'])*100:5.1f}%) [No weight]")
+        print()
+        print(f"  ℹ️  Global Similarity (reference): {global_similarity:.4f}")
         print()
     
     # Report phonemes only in one file
     if only_in_1:
-        print(f"PHONEMES ONLY IN {file1_name}:")
+        print(f"⚠️  PHONEMES ONLY IN REFERENCE ({file1_name}):")
         print(f"  {', '.join(sorted(only_in_1))}")
         print()
     
     if only_in_2:
-        print(f"PHONEMES ONLY IN {file2_name}:")
+        print(f"⚠️  PHONEMES ONLY IN SAMPLE ({file2_name}):")
         print(f"  {', '.join(sorted(only_in_2))}")
         print()
     
@@ -191,8 +289,8 @@ def main():
     # ========================================================================
     # CONFIGURE FILE PATHS HERE
     # ========================================================================
-    file1 = Path("signatures/s1/voice_profile_s1.npz")
-    file2 = Path("samples/s1/voice_sig.npz")
+    file1 = Path("test/signatures/s1/voice_profile_s1.npz")
+    file2 = Path("test/samples/s1/voice_sig.npz")
     # ========================================================================
     
     # Check if files exist
