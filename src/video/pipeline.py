@@ -121,18 +121,19 @@ class VideoPipeline:
             raise FileNotFoundError(f"TextGrid not found after MFA: {tg_path}")
         return tg_path
 
-    def process_single_video(self, video_path: str, transcript_text: Optional[str] = None) -> Dict[str, List[np.ndarray]]:
+    def process_single_video(self, video_path: str, audio_path: Optional[str] = None, transcript_text: Optional[str] = None) -> Dict[str, List[np.ndarray]]:
         """
         Process a single video end-to-end to extract phoneme embeddings.
         
         This is the main entry point for the pipeline. It orchestrates all steps:
-        1. Audio extraction
+        1. Audio extraction (or use provided audio)
         2. Transcription (if needed)
         3. Phoneme alignment
         4. Visual embedding extraction
         
         Args:
             video_path: Path to input video file
+            audio_path: Optional path to existing audio file (skips extraction if provided)
             transcript_text: Optional transcript (if None, will use Whisper to transcribe)
             
         Returns:
@@ -153,21 +154,26 @@ class VideoPipeline:
             workdir = Path(tmpdir)
             wav_path = workdir / f"{video.stem}.wav"
 
-            # 1) Extract audio (mono 16k) with ffmpeg
-            ffmpeg_cmd = [
-                "ffmpeg",
-                "-y",
-                "-i",
-                str(video),
-                "-ac",
-                "1",
-                "-ar",
-                "16000",
-                str(wav_path),
-            ]
-            proc = subprocess.run(ffmpeg_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            if proc.returncode != 0 or not wav_path.exists():
-                raise RuntimeError("Audio extraction failed: check ffmpeg and video file.")
+            # 1) Prepare Audio
+            if audio_path and Path(audio_path).exists():
+                # Use provided audio (copy to workdir for MFA)
+                shutil.copy(audio_path, wav_path)
+            else:
+                # Extract audio (mono 16k) with ffmpeg
+                ffmpeg_cmd = [
+                    "ffmpeg",
+                    "-y",
+                    "-i",
+                    str(video),
+                    "-ac",
+                    "1",
+                    "-ar",
+                    "16000",
+                    str(wav_path),
+                ]
+                proc = subprocess.run(ffmpeg_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                if proc.returncode != 0 or not wav_path.exists():
+                    raise RuntimeError("Audio extraction failed: check ffmpeg and video file.")
 
             # 2) Transcribe
             transcript = self._transcribe(wav_path, transcript_text)

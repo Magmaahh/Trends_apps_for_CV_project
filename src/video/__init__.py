@@ -18,6 +18,7 @@ Workflow:
 
 from .core import VideoFeatureExtractor
 from .pipeline import VideoPipeline
-from .matcher import IdentityMatcher
+from .core import VideoFeatureExtractor
+from .pipeline import VideoPipeline
 
-__all__ = ["VideoFeatureExtractor", "VideoPipeline", "IdentityMatcher"]
+__all__ = ["VideoFeatureExtractor", "VideoPipeline"]

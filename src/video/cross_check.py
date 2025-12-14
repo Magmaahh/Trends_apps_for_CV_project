@@ -7,10 +7,12 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from tqdm import tqdm
 import sys
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+if __name__ == "__main__" and __package__ is None:
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
+    __package__ = "src.video"
 
-from data_preparation.config import DATASET_OUTPUT, GOLD_STORE_DIR, DEVICE
-from data_preparation.model import VideoEmbeddingAdapter
+from .config import DATASET_OUTPUT, GOLD_STORE_DIR, DEVICE
+from .model import VideoEmbeddingAdapter
 import torch
 # --- CONFIGURAZIONE ---
 

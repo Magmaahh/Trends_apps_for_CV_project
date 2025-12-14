@@ -45,7 +45,7 @@ def run_cross_check(target, adapter_path):
     # For now, let's point to demo/step6_cross_check.py but we might need to update it.
     
     cmd = [
-        sys.executable, "demo/step6_cross_check.py",
+        sys.executable, "src/video/cross_check.py",
         "--target", target,
         "--adapter", adapter_path
     ]
