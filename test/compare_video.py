@@ -39,9 +39,10 @@ def compare_video(test_video_path, signature_path, adapter_path=None):
         adapter.eval()
     
     # 3. Process Test Video
-    # Assuming MFA models are in standard location
-    mfa_dict = Path("dataset/output/mfa_data/english_us_arpa.dict")
-    mfa_model = Path("dataset/output/mfa_data/english_us_arpa.zip")
+    # Using default MFA paths on Mac
+    home = Path.home()
+    mfa_dict = home / "Documents/MFA/pretrained_models/dictionary/english_us_arpa.dict"
+    mfa_model = home / "Documents/MFA/pretrained_models/acoustic/english_us_arpa.zip"
     
     if not mfa_dict.exists() or not mfa_model.exists():
         print("Error: MFA models not found in dataset/output/mfa_data/")

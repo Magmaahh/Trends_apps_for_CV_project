@@ -10,6 +10,8 @@ numpy>=1.24.0
 openai-whisper
 pydub
 textgrid  # Per leggere l'output di MFA
+librosa
+transformers
 
 # --- Utilities ---
 tqdm

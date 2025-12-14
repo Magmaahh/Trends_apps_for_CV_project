@@ -22,15 +22,7 @@ IMG_SIZE = 112
 EMBEDDING_DIM = 128
 MIN_PHONEME_SAMPLES = 5
 
-# GRID Corpus Grammar (for filename decoding)
-GRID_GRAMMAR = {
-    0: {"b": "bin", "l": "lay", "p": "place", "s": "set"},
-    1: {"b": "blue", "g": "green", "r": "red", "w": "white"},
-    2: {"a": "at", "b": "by", "i": "in", "w": "with"},
-    3: {l: l.upper() for l in "abcdefghijklmnopqrstuvwxyz"}, # letters
-    4: {"z": "zero", "1": "one", "2": "two", "3": "three", "4": "four", "5": "five", "6": "six", "7": "seven", "8": "eight", "9": "nine"},
-    5: {"n": "now", "p": "please", "s": "soon"}
-}
+
 
 # --- UTILITIES ---
 
@@ -183,18 +175,4 @@ def aggregate_embeddings(embedding_files: List[Path]) -> Dict[str, List[float]]:
     
     return gold
 
-def decode_grid_filename(stem: str):
-    """
-    Decode a 6-character GRID filename into a sentence.
-    """
-    if len(stem) != 6:
-        return None
 
-    words = []
-    for idx, char in enumerate(stem.lower()):
-        mapping = GRID_GRAMMAR.get(idx)
-        if mapping is None or char not in mapping:
-            return None
-        words.append(mapping[char])
-
-    return " ".join(words).upper()
