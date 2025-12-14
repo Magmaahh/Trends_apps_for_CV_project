@@ -1,41 +1,75 @@
-from __future__ import annotations
-
+import os
 import re
+import json
+import cv2
+import numpy as np
+import torch
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
-import cv2
-import numpy as np
+# --- CONFIGURATION ---
 
+# Dataset paths
+DATASET_INIT = "dataset/init"
+DATASET_OUTPUT = "dataset/output"
+GOLD_STORE_DIR = "dataset/output/gold_store"
+
+# Device
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+# Parameters
+IMG_SIZE = 112
+EMBEDDING_DIM = 128
+MIN_PHONEME_SAMPLES = 5
+
+# GRID Corpus Grammar (for filename decoding)
+GRID_GRAMMAR = {
+    0: {"b": "bin", "l": "lay", "p": "place", "s": "set"},
+    1: {"b": "blue", "g": "green", "r": "red", "w": "white"},
+    2: {"a": "at", "b": "by", "i": "in", "w": "with"},
+    3: {l: l.upper() for l in "abcdefghijklmnopqrstuvwxyz"}, # letters
+    4: {"z": "zero", "1": "one", "2": "two", "3": "three", "4": "four", "5": "five", "6": "six", "7": "seven", "8": "eight", "9": "nine"},
+    5: {"n": "now", "p": "please", "s": "soon"}
+}
+
+# --- UTILITIES ---
+
+def load_speakers():
+    """
+    Returns a sorted list of speaker IDs found in the dataset.
+    """
+    audio_root = os.path.join(DATASET_INIT, "audio_25k")
+    if not os.path.exists(audio_root):
+        return []
+
+    speakers = [
+        d for d in os.listdir(audio_root)
+        if os.path.isdir(os.path.join(audio_root, d)) and d.startswith("s")
+    ]
+
+    speakers.sort(key=lambda x: int(x[1:]) if x[1:].isdigit() else 999)
+    return speakers
+
+
+def load_embedding_speakers():
+    """
+    Returns speaker IDs for which video embeddings exist.
+    """
+    if not os.path.exists(DATASET_OUTPUT):
+        return []
+        
+    folders = [
+        d for d in os.listdir(DATASET_OUTPUT)
+        if d.startswith("video_embeddings_s")
+    ]
+
+    speakers = [f.split("_")[-1] for f in folders]
+    speakers.sort(key=lambda x: int(x[1:]) if x[1:].isdigit() else 999)
+    return speakers
 
 def parse_textgrid(textgrid_path: str, tier_name: str = "phones") -> List[Dict[str, float]]:
     """
     Parse a TextGrid file to extract phoneme intervals with timestamps.
-    
-    TextGrid is a file format used by Praat and MFA to store time-aligned annotations.
-    It contains "tiers" (layers) of annotations, where each tier has intervals with labels.
-    
-    This function extracts the "phones" tier which contains phoneme-level alignments.
-    
-    Args:
-        textgrid_path: Path to .TextGrid file
-        tier_name: Name of tier to extract (default: "phones")
-        
-    Returns:
-        List of dictionaries, each containing:
-        - phoneme: Phoneme label (e.g., "IH1", "AE1")
-        - start: Start time in seconds
-        - end: End time in seconds
-        
-    Example output:
-        [
-            {"phoneme": "HH", "start": 0.0, "end": 0.1},
-            {"phoneme": "EH1", "start": 0.1, "end": 0.25},
-            {"phoneme": "L", "start": 0.25, "end": 0.35},
-            ...
-        ]
-    
-    Note: Filters out silence markers ("sil", "sp", "<eps>")
     """
     path = Path(textgrid_path)
     if not path.exists():
@@ -55,6 +89,7 @@ def parse_textgrid(textgrid_path: str, tier_name: str = "phones") -> List[Dict[s
                 intervals.append({"phoneme": label, "start": float(interval.minTime), "end": float(interval.maxTime)})
         return intervals
     except Exception:
+        # Fallback manual parsing
         lines = path.read_text(encoding="utf-8", errors="ignore").splitlines()
         in_tier = False
         current: Dict[str, Optional[float]] = {}
@@ -85,24 +120,6 @@ def parse_textgrid(textgrid_path: str, tier_name: str = "phones") -> List[Dict[s
 def parse_align_file(align_path: str) -> str:
     """
     Convert GRID dataset .align file to clean uppercase text.
-    
-    The GRID audiovisual speech corpus uses .align files to store word-level
-    alignments. This function extracts just the words (ignoring timestamps)
-    to create a transcript.
-    
-    Args:
-        align_path: Path to .align file
-        
-    Returns:
-        Space-separated uppercase transcript
-        
-    Example:
-        Input file content:
-            0.0 0.5 bin
-            0.5 1.0 blue
-            1.0 1.5 at
-        Output:
-            "BIN BLUE AT"
     """
     path = Path(align_path)
     if not path.exists():
@@ -121,20 +138,6 @@ def parse_align_file(align_path: str) -> str:
 def load_video_frames(video_path: Path) -> Tuple[List[np.ndarray], float]:
     """
     Load all frames from a video file along with its frame rate.
-    
-    This is a utility function used by the pipeline to load the entire video
-    into memory for processing. Each frame is a BGR numpy array (OpenCV format).
-    
-    Args:
-        video_path: Path to video file
-        
-    Returns:
-        Tuple of (frames, fps) where:
-        - frames: List of BGR numpy arrays, one per frame
-        - fps: Frames per second (used to convert time to frame indices)
-        
-    Note: For long videos, this may consume significant memory. Consider
-    processing videos in chunks for production use.
     """
     if not video_path.exists():
         raise FileNotFoundError(f"Video not found: {video_path}")
@@ -157,38 +160,7 @@ def load_video_frames(video_path: Path) -> Tuple[List[np.ndarray], float]:
 def aggregate_embeddings(embedding_files: List[Path]) -> Dict[str, List[float]]:
     """
     Aggregate embeddings from multiple videos to create a gold standard profile.
-    
-    This function is used to build the reference "gold standard" profile from
-    multiple authentic videos of a person. It combines all embeddings for each
-    phoneme and computes a representative centroid.
-    
-    Process:
-    1. Load all .npz files (each contains embeddings from one video)
-    2. Collect all embeddings for each phoneme across all videos
-    3. Compute mean (centroid) for each phoneme
-    4. Normalize to unit length (for cosine similarity comparison)
-    
-    Args:
-        embedding_files: List of paths to .npz files, each containing
-                        phoneme embeddings from a single video
-                        
-    Returns:
-        Dictionary mapping phoneme labels to normalized centroid vectors.
-        Format: {"IH1": [128-D normalized vector], "AE1": [...], ...}
-        
-    Example:
-        If you have 5 authentic videos of a person:
-        - video1.npz: {"IH1": [emb1, emb2], "AE1": [emb3]}
-        - video2.npz: {"IH1": [emb4], "AE1": [emb5, emb6]}
-        - ...
-        
-        Result: {"IH1": mean([emb1, emb2, emb4, ...]), "AE1": mean([emb3, emb5, emb6, ...])}
-        
-    Note: The resulting profile represents the "average" way this person
-    pronounces each phoneme, which serves as the reference for comparison.
     """
-    import json
-
     # Step 1: Collect all embeddings for each phoneme
     aggregated: Dict[str, List[np.ndarray]] = {}
     for npz_file in embedding_files:
@@ -210,3 +182,19 @@ def aggregate_embeddings(embedding_files: List[Path]) -> Dict[str, List[float]]:
         gold[phoneme] = (centroid / norm).tolist()
     
     return gold
+
+def decode_grid_filename(stem: str):
+    """
+    Decode a 6-character GRID filename into a sentence.
+    """
+    if len(stem) != 6:
+        return None
+
+    words = []
+    for idx, char in enumerate(stem.lower()):
+        mapping = GRID_GRAMMAR.get(idx)
+        if mapping is None or char not in mapping:
+            return None
+        words.append(mapping[char])
+
+    return " ".join(words).upper()
