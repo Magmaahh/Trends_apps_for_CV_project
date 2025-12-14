@@ -57,8 +57,8 @@ def create_video_signature(source_folder=VIDEO_GOLD_FOLDER, output_file=VIDEO_SI
     
     # Initialize Pipeline
     # Note: You need MFA models downloaded. Assuming they are in dataset/output/mfa_data
-    mfa_dict = Path("dataset/output/mfa_data/english_us_arpa.dict")
-    mfa_model = Path("dataset/output/mfa_data/english_us_arpa.zip")
+    mfa_dict = Path("../dataset/output/mfa_data/english_us_arpa.dict")
+    mfa_model = Path("../dataset/output/mfa_data/english_us_arpa.zip")
     
     if not mfa_dict.exists() or not mfa_model.exists():
         print("Error: MFA models not found. Please run 'mfa model download dictionary english_us_arpa' and 'mfa model download acoustic english_us_arpa'.")
