@@ -8,8 +8,8 @@ import torch
 from pathlib import Path
 from tqdm import tqdm
 
-from data_preparation.config import *
-from data_preparation.model import MouthEmbeddingResNet3D, VideoEmbeddingAdapter
+from .config import *
+from .model import MouthEmbeddingResNet3D, VideoEmbeddingAdapter
 
 # GRID filename decoding
 def decode_grid_filename(stem: str):

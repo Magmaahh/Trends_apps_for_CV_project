@@ -7,8 +7,8 @@ Pipeline stages:
 3. Build gold phoneme dictionaries
 """
 
-from utils import load_speakers, load_embedding_speakers
-from pipeline import prepare_speaker_for_mfa, extract_embeddings_for_speaker, build_gold_dictionary_for_speaker
+from .training_utils import load_speakers, load_embedding_speakers
+from .training_pipeline import prepare_speaker_for_mfa, extract_embeddings_for_speaker, build_gold_dictionary_for_speaker
 
 def main():
     # MFA preparation

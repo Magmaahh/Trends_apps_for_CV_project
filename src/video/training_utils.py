@@ -1,5 +1,5 @@
 import os
-from config import DATASET_INIT, DATASET_OUTPUT
+from .config import DATASET_INIT, DATASET_OUTPUT
 
 def load_speakers():
     """
