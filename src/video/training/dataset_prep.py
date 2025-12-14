@@ -8,9 +8,14 @@ import json
 from pathlib import Path
 from tqdm import tqdm
 
-from src.video.common.utils import (
+try:
+    import whisper
+except ImportError:
+    whisper = None
+
+from .utils import (
     DATASET_INIT, DATASET_OUTPUT, GOLD_STORE_DIR, DEVICE, EMBEDDING_DIM, IMG_SIZE, MIN_PHONEME_SAMPLES,
-    decode_grid_filename, parse_textgrid
+    parse_textgrid
 )
 from src.video.common.model import MouthEmbeddingResNet3D, VideoEmbeddingAdapter
 
@@ -47,7 +52,13 @@ def prepare_speaker_for_mfa(speaker_id):
                 text = " ".join(words).upper()
         
         if text is None:
-            text = decode_grid_filename(file_id)
+            # Fallback to Whisper if installed
+            if whisper:
+                model = whisper.load_model("base")
+                result = model.transcribe(str(wav))
+                text = result.get("text", "").strip().upper()
+            else:
+                print(f"Warning: No transcript for {file_id} and Whisper not installed.")
 
         if text:
             with open(os.path.join(output_dir, f"{file_id}.lab"), "w") as f:
