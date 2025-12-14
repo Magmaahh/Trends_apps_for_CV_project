@@ -49,7 +49,7 @@ from src.video.inference.pipeline import VideoPipeline
 from src.video.inference.utils import aggregate_embeddings, DEVICE
 
 # Paths for Video Signature
-VIDEO_GOLD_FOLDER = os.path.join(os.path.dirname(__file__), "../dataset/init/s1") # Example source
+VIDEO_GOLD_FOLDER = os.path.join(os.path.dirname(__file__), "samples/s1") 
 VIDEO_SIGNATURE_FILE = os.path.join(os.path.dirname(__file__), "signatures/s1/video_gold.json")
 
 def create_video_signature(source_folder=VIDEO_GOLD_FOLDER, output_file=VIDEO_SIGNATURE_FILE):
