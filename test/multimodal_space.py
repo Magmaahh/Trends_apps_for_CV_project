@@ -59,7 +59,7 @@ OUTPUT_PATH = None
 IMPOSTOR_SPEAKER_ID = "s2"
 
 # Path to trained model (used in "test-impostor" mode)
-MODEL_PATH = "test/signatures/s1/multimodal_model_full.npz"
+MODEL_PATH = "signatures/s1/multimodal_model_full.npz"
 
 # Base path to dataset
 DATASET_BASE_PATH = "../dataset/output"
@@ -793,7 +793,7 @@ def main():
     
     if MODE == "dataset":
         # Train from dataset with multi-sample support
-        output = OUTPUT_PATH or f"test/signatures/{SPEAKER_ID}/multimodal_model_full.npz"
+        output = OUTPUT_PATH or f"signatures/{SPEAKER_ID}/multimodal_model_full.npz"
         
         space, train_stats, test_results = train_from_dataset(
             speaker_id=SPEAKER_ID,
@@ -855,8 +855,8 @@ def main():
         print()
         
         # Try demo with existing files
-        audio_path = Path("test/signatures/s1/voice_profile_s1.npz")
-        video_path = Path("test/signatures/s1/s1_gold.json")
+        audio_path = Path("signatures/s1/voice_profile_s1.npz")
+        video_path = Path("signatures/s1/s1_gold.json")
         
         if audio_path.exists() and video_path.exists():
             print("-" * 80)
@@ -873,7 +873,7 @@ def main():
             space.train(audio_emb, video_emb)
             
             # Save demo model
-            model_path = "test/signatures/s1/multimodal_model.npz"
+            model_path = "signatures/s1/multimodal_model.npz"
             space.save(model_path)
             
             # Self-verification (should be high compatibility)
