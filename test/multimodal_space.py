@@ -37,7 +37,7 @@ sys.path.insert(0, str(project_root))
 # CONFIGURATION - Modify these values as needed
 # =============================================================================
 
-# Mode: "dataset" | "test-impostor" | "demo"
+# Mode: "dataset" | "test-impostor"
 MODE = "dataset"
 
 # Speaker ID for training (e.g., "s1", "s10", "s2")
@@ -51,6 +51,10 @@ MAX_SAMPLES = None
 
 # Ridge regression regularization parameter
 LAMBDA_REG = 1.0
+
+# Threshold settings
+THRESHOLD_SIGMA = 2.0  # Number of standard deviations
+THRESHOLD_MIN = 0.0    # No minimum threshold (original)
 
 # Output path for trained model (None = auto-generate based on speaker)
 OUTPUT_PATH = None
@@ -210,8 +214,10 @@ class MultimodalCompatibilitySpace:
                 mean_error = np.mean(errors)
                 std_error = np.std(errors) if len(errors) > 1 else mean_error * 0.1
                 
-                # Threshold = mean + 2*std (allows for variance)
-                self.thresholds[phoneme] = mean_error + 2 * std_error
+                # Threshold = mean + N*std (allows for variance)
+                # Use minimum threshold to avoid overly strict matching
+                raw_threshold = mean_error + THRESHOLD_SIGMA * std_error
+                self.thresholds[phoneme] = max(THRESHOLD_MIN, raw_threshold)
                 
                 all_distances.extend(errors.tolist())
                 
@@ -231,7 +237,8 @@ class MultimodalCompatibilitySpace:
         
         # Compute global threshold
         if all_distances:
-            self.global_threshold = np.mean(all_distances) + 2 * np.std(all_distances)
+            raw_global = np.mean(all_distances) + THRESHOLD_SIGMA * np.std(all_distances)
+            self.global_threshold = max(THRESHOLD_MIN, raw_global)
         
         print()
         print("=" * 80)
@@ -774,11 +781,6 @@ def test_different_speaker(
 
 
 def main():
-    """
-    Main function - uses configuration constants defined at the top of the file.
-    
-    Modify the CONFIGURATION section above to change settings.
-    """
     
     print("=" * 80)
     print("🎬 MULTIMODAL COMPATIBILITY SPACE")
@@ -821,87 +823,6 @@ def main():
             speaker_id=IMPOSTOR_SPEAKER_ID,
             max_samples=MAX_SAMPLES or 20
         )
-    
-    elif MODE == "demo":
-        print("=" * 80)
-        print("🎬 MULTIMODAL COMPATIBILITY SPACE - DEMO")
-        print("=" * 80)
-        print()
-        print("This script creates a 'common space' for audio and video embeddings")
-        print("using per-phoneme ridge regression.")
-        print()
-        print("How it works:")
-        print("  1. TRAINING: For each phoneme p, learn W_p such that v_p ≈ W_p · a_p")
-        print("     where a_p = audio embedding, v_p = video embedding")
-        print()
-        print("  2. INFERENCE: Given test audio/video:")
-        print("     - Predict: v̂_p = W_p · a_p^test")
-        print("     - Compare: error = ||v̂_p - v_p^test||")
-        print("     - If error < threshold → compatible")
-        print()
-        print("Usage:")
-        print()
-        print("  TRAINING:")
-        print("    python multimodal_space.py --mode train \\")
-        print("           --audio signatures/s1/audio.npz \\")
-        print("           --video signatures/s1/video_gold.json \\")
-        print("           --output signatures/s1/multimodal_model.npz")
-        print()
-        print("  VERIFICATION:")
-        print("    python multimodal_space.py --mode verify \\")
-        print("           --model signatures/s1/multimodal_model.npz \\")
-        print("           --test-audio samples/s1/voice_sig.npz \\")
-        print("           --test-video samples/s1/video_test.json")
-        print()
-        
-        # Try demo with existing files
-        audio_path = Path("signatures/s1/voice_profile_s1.npz")
-        video_path = Path("signatures/s1/s1_gold.json")
-        
-        if audio_path.exists() and video_path.exists():
-            print("-" * 80)
-            print("Found existing signatures! Running demo training...")
-            print("-" * 80)
-            
-            audio_emb = load_audio_embeddings(str(audio_path))
-            video_emb = load_video_embeddings(str(video_path))
-            
-            print(f"Audio phonemes: {len(audio_emb)} (dim: {list(audio_emb.values())[0].shape})")
-            print(f"Video phonemes: {len(video_emb)} (dim: {list(video_emb.values())[0].shape})")
-            
-            space = MultimodalCompatibilitySpace(lambda_reg=1.0)
-            space.train(audio_emb, video_emb)
-            
-            # Save demo model
-            model_path = "signatures/s1/multimodal_model.npz"
-            space.save(model_path)
-            
-            # Self-verification (should be high compatibility)
-            print("\n" + "=" * 80)
-            print("Self-verification (training data):")
-            space.verify(audio_emb, video_emb)
-        else:
-            print("Note: No existing signatures found for demo.")
-            print(f"Expected: {audio_path} and {video_path}")
-        
-        # Show dataset mode instructions
-        print("\n" + "=" * 80)
-        print("📚 DATASET MODE (Multi-Sample Training)")
-        print("=" * 80)
-        print()
-        print("Train from the full dataset with multiple samples per phoneme:")
-        print()
-        print("  python multimodal_space.py --mode dataset --speaker s1")
-        print()
-        print("With options:")
-        print("  --train-ratio 0.8    # 80% train, 20% test")
-        print("  --max-samples 50     # Limit samples for faster testing")
-        print("  --impostor s2        # Also test on different speaker")
-        print()
-        print("Test on impostor:")
-        print("  python multimodal_space.py --mode test-impostor \\")
-        print("         --model test/signatures/s1/multimodal_model_full.npz \\")
-        print("         --impostor s2")
 
 
 if __name__ == "__main__":
