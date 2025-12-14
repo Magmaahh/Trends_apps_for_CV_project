@@ -44,12 +44,17 @@ from typing import Dict, List, Tuple
 from collections import defaultdict
 
 
+from compare_audio import compute_confidence_and_verdict, compare_embeddings, print_results
+from compare_video import compare_video
+from create_signature import create_video_signature, create_audio_signature
+
+
 # =============================================================================
 # CONFIGURATION
 # =============================================================================
 
 # Choose person to test: "trump" or "biden"
-PERSON = "biden"
+PERSON = "trump"
 
 # Path to reference videos (for training) - REAL videos
 REFERENCE_VIDEO_FOLDER = f"../dataset/trump_biden/{PERSON}"
@@ -60,19 +65,19 @@ TEST_VIDEO_FOLDER = f"../dataset/trump_biden/{PERSON}"
 # Filter reference videos: Use ONLY REAL videos (IDs 08-15)
 # Trump Real: t-08 to t-15
 # Biden Real: b-08 to b-15
-REFERENCE_FILTER = [f"{PERSON[0]}-{i:02d}" for i in range(9, 16)]
+REFERENCE_FILTER = [f"{PERSON[0]}-{i:02d}" for i in range(9, 15)]
 
 # Filter test videos: Use ONLY FAKE videos (IDs 00-07)
 # Trump Fake: t-00 to t-07
 # Biden Fake: b-00 to b-07
-#TEST_FILTER = [f"{PERSON[0]}-{i:02d}" for i in range(8, 8)] # REAL
+#TEST_FILTER = [f"{PERSON[0]}-{i:02d}" for i in range(15, 16)] # REAL
 TEST_FILTER = [f"{PERSON[0]}-{i:02d}" for i in range(0, 8)] # FAKE
 
 # Output directory for processed data
 PROCESSED_DIR = "../dataset/trump_biden/processed"
 
 # Ridge regression regularization
-LAMBDA_REG = 1.0
+LAMBDA_REG = 10.0
 
 # Auto-preprocess videos if embeddings not found
 AUTO_PREPROCESS = False
@@ -267,6 +272,27 @@ def load_embeddings_from_folder(
     return dict(audio_embeddings), dict(video_embeddings), sample_names
 
 
+def load_single_video_embeddings(
+    video_path: Path,
+    processed_base: Path
+) -> Tuple[Dict[str, np.ndarray], Dict[str, np.ndarray]]:
+    """
+    Load embeddings for a single video.
+    
+    Returns:
+        Tuple of (audio_embeddings, video_embeddings)
+    """
+    paths = get_processed_paths(video_path, processed_base)
+    
+    if not check_processed(paths):
+        return {}, {}
+    
+    audio_emb = load_audio_embeddings(str(paths["audio_emb"]))
+    video_emb = load_video_embeddings_npz(str(paths["video_emb"]))
+    
+    return audio_emb, video_emb
+
+
 def end_to_end_verification(
     reference_folder: str,
     test_folder: str,
@@ -279,6 +305,7 @@ def end_to_end_verification(
 ) -> Dict:
     """
     End-to-end multimodal identity verification.
+    Tests each video INDIVIDUALLY and aggregates results.
     
     Args:
         reference_folder: Path to reference videos (for training)
@@ -291,10 +318,11 @@ def end_to_end_verification(
         auto_preprocess: Auto-preprocess if embeddings not found
         
     Returns:
-        Verification results dictionary
+        Verification results dictionary with per-video results
     """
     print("=" * 80)
     print("🎬 END-TO-END MULTIMODAL IDENTITY VERIFICATION")
+    print("    (Per-Video Testing Mode)")
     print("=" * 80)
     
     ref_folder = Path(reference_folder)
@@ -331,41 +359,111 @@ def end_to_end_verification(
     space = MultimodalCompatibilitySpace(lambda_reg=lambda_reg)
     space.train(ref_audio_arrays, ref_video_arrays, min_samples=1)
     
-    # 3. Load test embeddings
+    # 3. Test EACH video individually
     print("\n" + "=" * 80)
-    print("🧪 STEP 3: Loading Test Data")
+    print("🧪 STEP 3: Per-Video Testing")
     print("=" * 80)
     
-    test_audio, test_video, test_names = load_embeddings_from_folder(
-        test_folder_path,
-        processed_base,
-        transcript_base,
-        test_filter,
-        auto_preprocess
-    )
+    video_files = get_video_files(test_folder_path, test_filter)
     
-    if not test_audio or not test_video:
-        print("❌ Error: No test data loaded")
+    per_video_results = []
+    all_compatibility_ratios = []
+    all_confidences = []
+    
+    for video_path in video_files:
+        video_id = video_path.stem
+        
+        # Load embeddings for this single video
+        audio_emb, video_emb = load_single_video_embeddings(video_path, processed_base)
+        
+        if not audio_emb or not video_emb:
+            print(f"  ⏭️  {video_id}: Not processed, skipping")
+            continue
+        
+        print(f"\n  📹 Testing {video_id}...")
+        
+        # Verify this single video (silently)
+        import io
+        import sys
+        old_stdout = sys.stdout
+        sys.stdout = io.StringIO()
+        
+        result = space.verify(audio_emb, video_emb)
+        
+        sys.stdout = old_stdout
+        
+        # Store result
+        per_video_results.append({
+            "video_id": video_id,
+            "verdict": result["verdict"],
+            "confidence": result["confidence"],
+            "compatibility_ratio": result["compatibility_ratio"],
+            "compatible_phonemes": result["compatible_phonemes"],
+            "total_phonemes": result["total_phonemes"],
+            "average_error": result["average_error"]
+        })
+        
+        all_compatibility_ratios.append(result["compatibility_ratio"])
+        all_confidences.append(result["confidence"])
+        
+        # Print summary for this video
+        status = "🟢" if result["confidence"] > 50 else "🟡" if result["confidence"] > 25 else "🔴"
+        print(f"     {status} {result['verdict']}: {result['confidence']:.1f}% ({result['compatible_phonemes']}/{result['total_phonemes']} phonemes)")
+    
+    # 4. Aggregate results
+    print("\n" + "=" * 80)
+    print("📊 STEP 4: Aggregated Results")
+    print("=" * 80)
+    
+    if not per_video_results:
+        print("❌ No videos tested")
         return {}
     
-    # Convert to arrays
-    test_audio_arrays = {k: np.array(v) for k, v in test_audio.items()}
-    test_video_arrays = {k: np.array(v) for k, v in test_video.items()}
+    avg_compatibility = np.mean(all_compatibility_ratios)
+    avg_confidence = np.mean(all_confidences)
+    std_confidence = np.std(all_confidences)
     
-    # 4. Verify
-    print("\n" + "=" * 80)
-    print("🔍 STEP 4: Verification")
-    print("=" * 80)
+    # Determine final verdict based on average
+    if avg_compatibility >= 0.7:
+        final_verdict = "SAME PERSON"
+    elif avg_compatibility >= 0.5:
+        final_verdict = "LIKELY SAME PERSON"
+    elif avg_compatibility >= 0.3:
+        final_verdict = "UNCERTAIN"
+    else:
+        final_verdict = "DIFFERENT PERSON"
     
-    results = space.verify(test_audio_arrays, test_video_arrays)
+    # Count verdicts
+    verdict_counts = {}
+    for r in per_video_results:
+        v = r["verdict"]
+        verdict_counts[v] = verdict_counts.get(v, 0) + 1
     
-    # Add metadata
-    results["reference_samples"] = len(ref_names)
-    results["test_samples"] = len(test_names)
-    results["reference_folder"] = str(ref_folder)
-    results["test_folder"] = str(test_folder_path)
+    print()
+    print("━" * 80)
+    print(f"🎯 FINAL VERDICT: {final_verdict}")
+    print("━" * 80)
+    print(f"Videos tested:       {len(per_video_results)}")
+    print(f"Average confidence:  {avg_confidence:.1f}% (±{std_confidence:.1f}%)")
+    print(f"Average compatibility: {avg_compatibility*100:.1f}%")
+    print()
+    print("Verdict breakdown:")
+    for v, count in sorted(verdict_counts.items()):
+        print(f"  - {v}: {count} videos")
+    print("━" * 80)
     
-    return results
+    return {
+        "final_verdict": final_verdict,
+        "average_confidence": float(avg_confidence),
+        "std_confidence": float(std_confidence),
+        "average_compatibility_ratio": float(avg_compatibility),
+        "videos_tested": len(per_video_results),
+        "verdict_breakdown": verdict_counts,
+        "per_video_results": per_video_results,
+        "reference_samples": len(ref_names),
+        "reference_folder": str(ref_folder),
+        "test_folder": str(test_folder_path)
+    }
 
 
 def main():
@@ -421,6 +519,218 @@ def main():
         
         print(f"\n📄 Results saved to: {output_file}")
 
+    
+    # ==========================================================================
+    # AUDIO & VIDEO COMPARISON - Test ALL FAKE videos
+    # ==========================================================================
+    
+    processed_base = project_root / "dataset/trump_biden/processed/trump"
+    sig_path = Path(__file__).parent / "signatures/trump"
+    sig_path.mkdir(parents=True, exist_ok=True)
+    
+    # Create signatures if needed
+    reference_audio_sig = sig_path / "audio_signature.npz"
+    reference_video_sig = sig_path / "video_signature.npz"
+    
+    # Create audio signature
+    if not reference_audio_sig.exists():
+        print("\nCreating audio signature from reference embeddings...")
+        all_audio_embeddings = {}
+        for ref_id in REFERENCE_FILTER:
+            ref_audio_npz = processed_base / ref_id / f"{ref_id}_audio.npz"
+            if ref_audio_npz.exists():
+                emb = load_audio_embeddings(str(ref_audio_npz))
+                for phoneme, vec in emb.items():
+                    if phoneme not in all_audio_embeddings:
+                        all_audio_embeddings[phoneme] = []
+                    if vec.ndim == 2:
+                        all_audio_embeddings[phoneme].extend(vec)
+                    else:
+                        all_audio_embeddings[phoneme].append(vec)
+        if all_audio_embeddings:
+            aggregated = {p: np.mean(v, axis=0) for p, v in all_audio_embeddings.items()}
+            np.savez(reference_audio_sig, **aggregated)
+            print(f"✓ Audio signature: {len(aggregated)} phonemes")
+    
+    # Create video signature
+    if not reference_video_sig.exists():
+        print("Creating video signature from reference embeddings...")
+        all_video_embeddings = {}
+        for ref_id in REFERENCE_FILTER:
+            ref_video_npz = processed_base / ref_id / f"{ref_id}_video.npz"
+            if ref_video_npz.exists():
+                emb = load_video_embeddings_npz(str(ref_video_npz))
+                for phoneme, vec in emb.items():
+                    if phoneme not in all_video_embeddings:
+                        all_video_embeddings[phoneme] = []
+                    if vec.ndim == 2:
+                        all_video_embeddings[phoneme].extend(vec)
+                    else:
+                        all_video_embeddings[phoneme].append(vec)
+        if all_video_embeddings:
+            aggregated = {p: np.mean(v, axis=0) for p, v in all_video_embeddings.items()}
+            np.savez(reference_video_sig, **aggregated)
+            print(f"✓ Video signature: {len(aggregated)} phonemes")
+    
+    # Helper function for consistent color based on excellent percentage
+    def get_status_color(excellent_pct):
+        """Return color emoji based on ≥0.9 percentage threshold"""
+        if excellent_pct >= 70:
+            return "🟢"  # HIGH - ≥70%
+        elif excellent_pct >= 40:
+            return "🟡"  # MEDIUM - 40-70%
+        elif excellent_pct >= 20:
+            return "🟠"  # LOW - 20-40%
+        else:
+            return "🔴"  # VERY LOW - <20%
+    
+    # Test IDs
+    fake_ids = [f"t-{i:02d}" for i in range(0, 8)]  # FAKE: t-00 to t-07
+    real_ids = ["t-08", "t-15"]  # REAL not in signature (signature uses t-09 to t-14)
+    
+    # ==========================================================================
+    # AUDIO COMPARISON
+    # ==========================================================================
+    print("\n" + "=" * 80)
+    print("🎵 AUDIO COMPARISON")
+    print("=" * 80)
+    print(f"{'Video':<10} | {'Type':<6} | {'Global Sim':<10} | {'≥0.9':<7} | {'Verdict'}")
+    print("-" * 70)
+    
+    audio_results_fake = []
+    audio_results_real = []
+    
+    # Test REAL samples first (not in signature)
+    for test_id in real_ids:
+        test_audio_npz = processed_base / test_id / f"{test_id}_audio.npz"
+        if reference_audio_sig.exists() and test_audio_npz.exists():
+            similarities, global_sim, _, _ = compare_embeddings(reference_audio_sig, test_audio_npz)
+            metrics = compute_confidence_and_verdict(similarities)
+            
+            audio_results_real.append({
+                "video_id": test_id,
+                "global_sim": global_sim,
+                "excellent_pct": metrics["excellent_percentage"],
+                "verdict": metrics["verdict"]
+            })
+            
+            status = get_status_color(metrics["excellent_percentage"])
+            print(f"{test_id:<10} | {'REAL':<6} | {global_sim:<10.4f} | {status} {metrics['excellent_percentage']:>5.1f}% | {metrics['verdict']}")
+        else:
+            print(f"{test_id:<10} | {'REAL':<6} | {'N/A':<10} | {'N/A':<7} | Not found")
+    
+    print("-" * 70)
+    
+    # Test FAKE samples
+    for test_id in fake_ids:
+        test_audio_npz = processed_base / test_id / f"{test_id}_audio.npz"
+        if reference_audio_sig.exists() and test_audio_npz.exists():
+            similarities, global_sim, _, _ = compare_embeddings(reference_audio_sig, test_audio_npz)
+            metrics = compute_confidence_and_verdict(similarities)
+            
+            audio_results_fake.append({
+                "video_id": test_id,
+                "global_sim": global_sim,
+                "excellent_pct": metrics["excellent_percentage"],
+                "verdict": metrics["verdict"]
+            })
+            
+            status = get_status_color(metrics["excellent_percentage"])
+            print(f"{test_id:<10} | {'FAKE':<6} | {global_sim:<10.4f} | {status} {metrics['excellent_percentage']:>5.1f}% | {metrics['verdict']}")
+        else:
+            print(f"{test_id:<10} | {'FAKE':<6} | {'N/A':<10} | {'N/A':<7} | Not found")
+    
+    # Audio summary
+    print("-" * 70)
+    if audio_results_real:
+        avg_real = np.mean([r["excellent_pct"] for r in audio_results_real])
+        print(f"{'AVG REAL':<10} |        |            | {get_status_color(avg_real)} {avg_real:>5.1f}% |")
+    if audio_results_fake:
+        avg_fake = np.mean([r["excellent_pct"] for r in audio_results_fake])
+        print(f"{'AVG FAKE':<10} |        |            | {get_status_color(avg_fake)} {avg_fake:>5.1f}% |")
+    
+    # ==========================================================================
+    # VIDEO COMPARISON
+    # ==========================================================================
+    print("\n" + "=" * 80)
+    print("📹 VIDEO COMPARISON")
+    print("=" * 80)
+    print(f"{'Video':<10} | {'Type':<6} | {'Global Sim':<10} | {'≥0.9':<7} | {'Verdict'}")
+    print("-" * 70)
+    
+    video_results_fake = []
+    video_results_real = []
+    
+    # Test REAL samples first (not in signature)
+    for test_id in real_ids:
+        test_video_npz = processed_base / test_id / f"{test_id}_video.npz"
+        if reference_video_sig.exists() and test_video_npz.exists():
+            similarities, global_sim, _, _ = compare_embeddings(reference_video_sig, test_video_npz)
+            metrics = compute_confidence_and_verdict(similarities)
+            
+            video_results_real.append({
+                "video_id": test_id,
+                "global_sim": global_sim,
+                "excellent_pct": metrics["excellent_percentage"],
+                "verdict": metrics["verdict"]
+            })
+            
+            status = get_status_color(metrics["excellent_percentage"])
+            print(f"{test_id:<10} | {'REAL':<6} | {global_sim:<10.4f} | {status} {metrics['excellent_percentage']:>5.1f}% | {metrics['verdict']}")
+        else:
+            print(f"{test_id:<10} | {'REAL':<6} | {'N/A':<10} | {'N/A':<7} | Not found")
+    
+    print("-" * 70)
+    
+    # Test FAKE samples
+    for test_id in fake_ids:
+        test_video_npz = processed_base / test_id / f"{test_id}_video.npz"
+        if reference_video_sig.exists() and test_video_npz.exists():
+            similarities, global_sim, _, _ = compare_embeddings(reference_video_sig, test_video_npz)
+            metrics = compute_confidence_and_verdict(similarities)
+            
+            video_results_fake.append({
+                "video_id": test_id,
+                "global_sim": global_sim,
+                "excellent_pct": metrics["excellent_percentage"],
+                "verdict": metrics["verdict"]
+            })
+            
+            status = get_status_color(metrics["excellent_percentage"])
+            print(f"{test_id:<10} | {'FAKE':<6} | {global_sim:<10.4f} | {status} {metrics['excellent_percentage']:>5.1f}% | {metrics['verdict']}")
+        else:
+            print(f"{test_id:<10} | {'FAKE':<6} | {'N/A':<10} | {'N/A':<7} | Not found")
+    
+    # Video summary
+    print("-" * 70)
+    if video_results_real:
+        avg_real = np.mean([r["excellent_pct"] for r in video_results_real])
+        print(f"{'AVG REAL':<10} |        |            | {get_status_color(avg_real)} {avg_real:>5.1f}% |")
+    if video_results_fake:
+        avg_fake = np.mean([r["excellent_pct"] for r in video_results_fake])
+        print(f"{'AVG FAKE':<10} |        |            | {get_status_color(avg_fake)} {avg_fake:>5.1f}% |")
+    
+    # ==========================================================================
+    # FINAL SUMMARY
+    # ==========================================================================
+    print("\n" + "=" * 80)
+    print("📊 SUMMARY: REAL vs FAKE DETECTION")
+    print("=" * 80)
+    print("Color Legend: 🟢 ≥70% | 🟡 40-70% | 🟠 20-40% | 🔴 <20%")
+    print()
+    
+    if audio_results_real and audio_results_fake:
+        real_same_audio = sum(1 for r in audio_results_real if "SAME" in r["verdict"])
+        fake_same_audio = sum(1 for r in audio_results_fake if "SAME" in r["verdict"])
+        print(f"AUDIO - REAL: {real_same_audio}/{len(audio_results_real)} as SAME | FAKE: {fake_same_audio}/{len(audio_results_fake)} as SAME")
+    
+    if video_results_real and video_results_fake:
+        real_same_video = sum(1 for r in video_results_real if "SAME" in r["verdict"])
+        fake_same_video = sum(1 for r in video_results_fake if "SAME" in r["verdict"])
+        print(f"VIDEO - REAL: {real_same_video}/{len(video_results_real)} as SAME | FAKE: {fake_same_video}/{len(video_results_fake)} as SAME")
+    
+    print()
+    print("Expected: REAL should have higher ≥0.9% than FAKE")
 
 if __name__ == "__main__":
     main()

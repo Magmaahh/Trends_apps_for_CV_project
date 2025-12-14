@@ -12,37 +12,84 @@ sys.path.insert(0, str(project_root))
 from src.audio.phonemes2emb import PhonemeEmbeddingExtractor
 import numpy as np
 
-AUDIO_FOLDER = os.path.join(os.path.dirname(__file__), "../dataset/output/mfa_workspace_s10")          # Folder with .wav files
-TEXTGRID_FOLDER = os.path.join(os.path.dirname(__file__), "../dataset/output/mfa_output_phonemes_s10")   # Folder with .TextGrid files
-OUTPUT_FILE = os.path.join(os.path.dirname(__file__), "signatures/s10/audio.npz")
+# Default paths for audio signature
+DEFAULT_AUDIO_FOLDER = os.path.join(os.path.dirname(__file__), "../dataset/output/mfa_workspace_s10")
+DEFAULT_TEXTGRID_FOLDER = os.path.join(os.path.dirname(__file__), "../dataset/output/mfa_output_phonemes_s10")
+DEFAULT_OUTPUT_FILE = os.path.join(os.path.dirname(__file__), "signatures/s10/audio.npz")
 
-def create_audio_signature():
+def create_audio_signature(source_folder=None, output_dir=None, audio_folder=None, textgrid_folder=None):
+    """
+    Create an audio signature from audio files and TextGrid alignments.
+    
+    Args:
+        source_folder: If provided, looks for processed audio in this folder structure
+                      (expects {source_folder}/processed/{person}/{video_id}/ structure
+                       or direct folder with .wav and .TextGrid files)
+        output_dir: Directory to save the audio_signature.npz file
+        audio_folder: Direct path to folder with .wav files (overrides source_folder)
+        textgrid_folder: Direct path to folder with .TextGrid files (overrides source_folder)
+    """
     extractor = PhonemeEmbeddingExtractor()
     print("=== Voice Profile Extractor ===")
     
-    # Ensure output directory exists
-    output_dir = os.path.dirname(OUTPUT_FILE)
-    if output_dir and not os.path.exists(output_dir):
-        os.makedirs(output_dir, exist_ok=True)
+    # Determine paths
+    if audio_folder and textgrid_folder:
+        # Use direct paths
+        audio_path = audio_folder
+        textgrid_path = textgrid_folder
+    elif source_folder:
+        # Look for processed files in source_folder
+        source_path = Path(source_folder)
+        
+        # Check if it's a processed folder structure or contains audio/textgrid directly
+        wav_files = list(source_path.glob("*.wav")) + list(source_path.glob("**/*.wav"))
+        tg_files = list(source_path.glob("*.TextGrid")) + list(source_path.glob("**/*.TextGrid"))
+        
+        if wav_files and tg_files:
+            # Find common parent folder
+            audio_path = str(source_path)
+            textgrid_path = str(source_path)
+        else:
+            print(f"No .wav or .TextGrid files found in {source_folder}")
+            return None
+    else:
+        # Use defaults
+        audio_path = DEFAULT_AUDIO_FOLDER
+        textgrid_path = DEFAULT_TEXTGRID_FOLDER
+    
+    # Determine output file
+    if output_dir:
+        output_path = Path(output_dir)
+        output_path.mkdir(parents=True, exist_ok=True)
+        output_file = str(output_path / "audio_signature.npz")
+    else:
+        output_file = DEFAULT_OUTPUT_FILE
+        output_dir_path = os.path.dirname(output_file)
+        if output_dir_path and not os.path.exists(output_dir_path):
+            os.makedirs(output_dir_path, exist_ok=True)
     
     # Check if folders exist
-    if os.path.exists(AUDIO_FOLDER) and os.path.exists(TEXTGRID_FOLDER):
+    if os.path.exists(audio_path) and os.path.exists(textgrid_path):
         # Extract the voice profile
-        stats = extractor.extract_voice_profile(AUDIO_FOLDER, TEXTGRID_FOLDER, OUTPUT_FILE)
+        stats = extractor.extract_voice_profile(audio_path, textgrid_path, output_file)
         
         if stats:
             print("\n--- Final statistics ---")
             print(f"Unique phonemes found: {', '.join(stats['phoneme_labels'][:10])}...")
             
             # Verify the created file
-            if os.path.exists(OUTPUT_FILE):
+            if os.path.exists(output_file):
                 print(f"\n--- Output file verification ---")
-                with np.load(OUTPUT_FILE) as data:
-                    print(f"File {OUTPUT_FILE} contains {len(data.files)} phonemes:")
+                with np.load(output_file) as data:
+                    print(f"File {output_file} contains {len(data.files)} phonemes:")
                     for phoneme in sorted(data.files)[:5]:
                         print(f"  {phoneme}: shape {data[phoneme].shape}, dtype {data[phoneme].dtype}")
+            
+            return output_file
     else:
-        print(f"Folders not found.")
+        print(f"Folders not found: audio={audio_path}, textgrid={textgrid_path}")
+    
+    return None
 
 
 from src.video.inference.pipeline import VideoPipeline

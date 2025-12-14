@@ -1,332 +1,80 @@
 {
-  "verdict": "LIKELY SAME PERSON",
-  "confidence": 50.660377358490564,
-  "compatible_phonemes": 27,
-  "total_phonemes": 53,
-  "compatibility_ratio": 0.5094339622641509,
-  "average_error": 1.4310270286735591,
-  "phoneme_details": [
+  "final_verdict": "LIKELY SAME PERSON",
+  "average_confidence": 66.62986920106248,
+  "std_confidence": 20.884430369429868,
+  "average_compatibility_ratio": 0.6427056581001118,
+  "videos_tested": 7,
+  "verdict_breakdown": {
+    "LIKELY SAME PERSON": 3,
+    "UNCERTAIN": 1,
+    "SAME PERSON": 3
+  },
+  "per_video_results": [
     {
-      "phoneme": "AA1",
-      "error": 1.3501287803174187,
-      "threshold": 1.4167427811216835,
-      "compatible": true
+      "video_id": "t-00",
+      "verdict": "LIKELY SAME PERSON",
+      "confidence": 58.07692307692308,
+      "compatibility_ratio": 0.6153846153846154,
+      "compatible_phonemes": 24,
+      "total_phonemes": 39,
+      "average_error": 4.865680978766488
     },
     {
-      "phoneme": "AE1",
-      "error": 1.4258747915894645,
-      "threshold": 1.3701624747689836,
-      "compatible": false
+      "video_id": "t-01",
+      "verdict": "UNCERTAIN",
+      "confidence": 29.736842105263158,
+      "compatibility_ratio": 0.39473684210526316,
+      "compatible_phonemes": 15,
+      "total_phonemes": 38,
+      "average_error": 5.501050027306901
     },
     {
-      "phoneme": "AE2",
-      "error": 1.5802847471619084,
-      "threshold": 0.2747539999902162,
-      "compatible": false
+      "video_id": "t-02",
+      "verdict": "SAME PERSON",
+      "confidence": 85.0,
+      "compatibility_ratio": 0.7,
+      "compatible_phonemes": 21,
+      "total_phonemes": 30,
+      "average_error": 4.83006794715456
     },
     {
-      "phoneme": "AH0",
-      "error": 1.3156648293451683,
-      "threshold": 2.5018979057216333,
-      "compatible": true
+      "video_id": "t-03",
+      "verdict": "LIKELY SAME PERSON",
+      "confidence": 52.1875,
+      "compatibility_ratio": 0.53125,
+      "compatible_phonemes": 17,
+      "total_phonemes": 32,
+      "average_error": 5.2541811599519885
     },
     {
-      "phoneme": "AH1",
-      "error": 1.2867752921305395,
-      "threshold": 1.1445239764376374,
-      "compatible": false
+      "video_id": "t-04",
+      "verdict": "LIKELY SAME PERSON",
+      "confidence": 62.352941176470594,
+      "compatibility_ratio": 0.6764705882352942,
+      "compatible_phonemes": 23,
+      "total_phonemes": 34,
+      "average_error": 5.006529362159091
     },
     {
-      "phoneme": "AH2",
-      "error": 0.1299046571548327,
-      "threshold": 0.15588558858579926,
-      "compatible": true
+      "video_id": "t-06",
+      "verdict": "SAME PERSON",
+      "confidence": 91.25,
+      "compatibility_ratio": 0.825,
+      "compatible_phonemes": 33,
+      "total_phonemes": 40,
+      "average_error": 4.23717029056513
     },
     {
-      "phoneme": "AO0",
-      "error": 2.330491524540218,
-      "threshold": 0.06983297002381071,
-      "compatible": false
-    },
-    {
-      "phoneme": "AO1",
-      "error": 1.7595481738460952,
-      "threshold": 1.0921949148729961,
-      "compatible": false
-    },
-    {
-      "phoneme": "AW1",
-      "error": 1.1016046038831484,
-      "threshold": 1.3805148746832405,
-      "compatible": true
-    },
-    {
-      "phoneme": "AY1",
-      "error": 1.241297597599468,
-      "threshold": 1.6284583751925377,
-      "compatible": true
-    },
-    {
-      "phoneme": "AY2",
-      "error": 1.6983804551989266,
-      "threshold": 1.3571547829286108,
-      "compatible": false
-    },
-    {
-      "phoneme": "B",
-      "error": 1.54463362078172,
-      "threshold": 1.2544952673152236,
-      "compatible": false
-    },
-    {
-      "phoneme": "CH",
-      "error": 1.91526651849058,
-      "threshold": 0.6410572790385007,
-      "compatible": false
-    },
-    {
-      "phoneme": "D",
-      "error": 1.3630660135094208,
-      "threshold": 2.038179257146368,
-      "compatible": true
-    },
-    {
-      "phoneme": "DH",
-      "error": 1.4567447485070224,
-      "threshold": 1.9622448439710443,
-      "compatible": true
-    },
-    {
-      "phoneme": "EH0",
-      "error": 0.10005228057252415,
-      "threshold": 0.12006273668702898,
-      "compatible": true
-    },
-    {
-      "phoneme": "EH1",
-      "error": 1.3374324640540616,
-      "threshold": 1.6002873622596585,
-      "compatible": true
-    },
-    {
-      "phoneme": "EH2",
-      "error": 1.06329696796107,
-      "threshold": 0.41602330619401945,
-      "compatible": false
-    },
-    {
-      "phoneme": "ER0",
-      "error": 1.7484174626629716,
-      "threshold": 1.2547907531662172,
-      "compatible": false
-    },
-    {
-      "phoneme": "ER1",
-      "error": 1.60864505917407,
-      "threshold": 1.097766587601583,
-      "compatible": false
-    },
-    {
-      "phoneme": "EY1",
-      "error": 1.3686482950152372,
-      "threshold": 1.5110687341639815,
-      "compatible": true
-    },
-    {
-      "phoneme": "EY2",
-      "error": 0.11774759155304773,
-      "threshold": 0.1412971098636573,
-      "compatible": true
-    },
-    {
-      "phoneme": "F",
-      "error": 1.1237422459346964,
-      "threshold": 1.874502485724657,
-      "compatible": true
-    },
-    {
-      "phoneme": "G",
-      "error": 1.359494787530713,
-      "threshold": 0.6957930622845391,
-      "compatible": false
-    },
-    {
-      "phoneme": "HH",
-      "error": 1.6791578753768024,
-      "threshold": 0.8953011558031563,
-      "compatible": false
-    },
-    {
-      "phoneme": "IH0",
-      "error": 1.3874585747131036,
-      "threshold": 2.0209684748400294,
-      "compatible": true
-    },
-    {
-      "phoneme": "IH1",
-      "error": 1.3951154933186263,
-      "threshold": 1.7655196122788968,
-      "compatible": true
-    },
-    {
-      "phoneme": "IH2",
-      "error": 2.020401775262642,
-      "threshold": 0.2024438694224902,
-      "compatible": false
-    },
-    {
-      "phoneme": "IY0",
-      "error": 1.3489206495280939,
-      "threshold": 1.0065486593670214,
-      "compatible": false
-    },
-    {
-      "phoneme": "IY1",
-      "error": 1.23659647664799,
-      "threshold": 1.3960000450512466,
-      "compatible": true
-    },
-    {
-      "phoneme": "JH",
-      "error": 1.573695231961712,
-      "threshold": 1.217892801690305,
-      "compatible": false
-    },
-    {
-      "phoneme": "K",
-      "error": 1.4204719733519402,
-      "threshold": 1.994102435837352,
-      "compatible": true
-    },
-    {
-      "phoneme": "L",
-      "error": 1.2601072025527595,
-      "threshold": 1.9871720222501879,
-      "compatible": true
-    },
-    {
-      "phoneme": "M",
-      "error": 1.2228588061760135,
-      "threshold": 1.8839120776752785,
-      "compatible": true
-    },
-    {
-      "phoneme": "N",
-      "error": 1.4197786087107191,
-      "threshold": 2.223792454297908,
-      "compatible": true
-    },
-    {
-      "phoneme": "NG",
-      "error": 1.492635114893806,
-      "threshold": 1.0165421120025395,
-      "compatible": false
-    },
-    {
-      "phoneme": "OW0",
-      "error": 2.1428329996123274,
-      "threshold": 0.22898272286251892,
-      "compatible": false
-    },
-    {
-      "phoneme": "OW1",
-      "error": 2.2332012065281646,
-      "threshold": 1.5971892323811971,
-      "compatible": false
-    },
-    {
-      "phoneme": "P",
-      "error": 1.3147821711273777,
-      "threshold": 1.8046189603868994,
-      "compatible": true
-    },
-    {
-      "phoneme": "R",
-      "error": 1.2895818248523447,
-      "threshold": 1.6908865585895825,
-      "compatible": true
-    },
-    {
-      "phoneme": "S",
-      "error": 1.1984162363124384,
-      "threshold": 2.1278428506101656,
-      "compatible": true
-    },
-    {
-      "phoneme": "SH",
-      "error": 1.778135546520733,
-      "threshold": 1.23123623122462,
-      "compatible": false
-    },
-    {
-      "phoneme": "T",
-      "error": 1.2418773450668679,
-      "threshold": 2.373549767115317,
-      "compatible": true
-    },
-    {
-      "phoneme": "TH",
-      "error": 1.3037765413172981,
-      "threshold": 1.2203839359879898,
-      "compatible": false
-    },
-    {
-      "phoneme": "UH1",
-      "error": 2.244486342000215,
-      "threshold": 0.3731924332701496,
-      "compatible": false
-    },
-    {
-      "phoneme": "UW1",
-      "error": 1.1775688243459996,
-      "threshold": 1.5216027512615842,
-      "compatible": true
-    },
-    {
-      "phoneme": "UW2",
-      "error": 2.535644439802818,
-      "threshold": 0.07055125764818881,
-      "compatible": false
-    },
-    {
-      "phoneme": "V",
-      "error": 2.124200859897403,
-      "threshold": 1.3079346639542622,
-      "compatible": false
-    },
-    {
-      "phoneme": "W",
-      "error": 1.3190737512197475,
-      "threshold": 1.8878637035545527,
-      "compatible": true
-    },
-    {
-      "phoneme": "Y",
-      "error": 1.7336176849944493,
-      "threshold": 0.9573103158456678,
-      "compatible": false
-    },
-    {
-      "phoneme": "Z",
-      "error": 1.240986124169897,
-      "threshold": 2.036751208165605,
-      "compatible": true
-    },
-    {
-      "phoneme": "ZH",
-      "error": 0.035631562936163735,
-      "threshold": 0.12176258318082979,
-      "compatible": true
-    },
-    {
-      "phoneme": "spn",
-      "error": 2.1462777679858567,
-      "threshold": 0.7348045483002923,
-      "compatible": false
+      "video_id": "t-07",
+      "verdict": "SAME PERSON",
+      "confidence": 87.8048780487805,
+      "compatibility_ratio": 0.7560975609756098,
+      "compatible_phonemes": 31,
+      "total_phonemes": 41,
+      "average_error": 4.5126845951672285
     }
   ],
-  "reference_samples": 7,
-  "test_samples": 14,
-  "reference_folder": "../dataset/trump_biden/biden",
-  "test_folder": "../dataset/trump_biden/biden"
+  "reference_samples": 5,
+  "reference_folder": "../dataset/trump_biden/trump",
+  "test_folder": "../dataset/trump_biden/trump"
 }

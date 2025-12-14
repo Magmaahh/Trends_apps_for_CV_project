@@ -49,12 +49,12 @@ TRAIN_RATIO = 0.8
 # Maximum samples to load (None = all, or set a number like 50 for faster testing)
 MAX_SAMPLES = None
 
-# Ridge regression regularization parameter
-LAMBDA_REG = 1.0
+# Ridge regression regularization parameter (optimized by grid search)
+LAMBDA_REG = 10.0
 
-# Threshold settings
+# Threshold settings (optimized by grid search)
 THRESHOLD_SIGMA = 2.0  # Number of standard deviations
-THRESHOLD_MIN = 0.0    # No minimum threshold (original)
+THRESHOLD_MULTIPLIER = 2.0  # Minimum threshold = mean_error * this multiplier
 
 # Output path for trained model (None = auto-generate based on speaker)
 OUTPUT_PATH = None
@@ -212,12 +212,16 @@ class MultimodalCompatibilitySpace:
                 errors = np.linalg.norm(predicted_video - video_emb, axis=1)
                 
                 mean_error = np.mean(errors)
-                std_error = np.std(errors) if len(errors) > 1 else mean_error * 0.1
+                std_error = np.std(errors) if len(errors) > 1 else mean_error * 0.5
                 
-                # Threshold = mean + N*std (allows for variance)
-                # Use minimum threshold to avoid overly strict matching
-                raw_threshold = mean_error + THRESHOLD_SIGMA * std_error
-                self.thresholds[phoneme] = max(THRESHOLD_MIN, raw_threshold)
+                # Threshold calculation with multiple strategies:
+                # 1. Statistical: mean + N*std
+                # 2. Multiplicative: mean * multiplier (handles few-sample cases better)
+                stat_threshold = mean_error + THRESHOLD_SIGMA * std_error
+                mult_threshold = mean_error * THRESHOLD_MULTIPLIER
+                
+                # Use the larger of the two (more permissive)
+                self.thresholds[phoneme] = max(stat_threshold, mult_threshold)
                 
                 all_distances.extend(errors.tolist())
                 
@@ -237,8 +241,11 @@ class MultimodalCompatibilitySpace:
         
         # Compute global threshold
         if all_distances:
-            raw_global = np.mean(all_distances) + THRESHOLD_SIGMA * np.std(all_distances)
-            self.global_threshold = max(THRESHOLD_MIN, raw_global)
+            mean_dist = np.mean(all_distances)
+            std_dist = np.std(all_distances)
+            stat_global = mean_dist + THRESHOLD_SIGMA * std_dist
+            mult_global = mean_dist * THRESHOLD_MULTIPLIER
+            self.global_threshold = max(stat_global, mult_global)
         
         print()
         print("=" * 80)
