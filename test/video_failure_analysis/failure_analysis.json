@@ -1,0 +1,32 @@
+{
+  "performance": {
+    "audio_accuracy": 0.9,
+    "video_accuracy": 0.4,
+    "audio_roc_auc": 1.0,
+    "video_roc_auc": 0.52
+  },
+  "cv_analysis": {
+    "audio_mean": 0.8714285714285716,
+    "audio_std": 0.12380952380952381,
+    "video_mean": 0.5857142857142857,
+    "video_std": 0.10497813183356479
+  },
+  "failure_modes": {
+    "video_wrong_audio_correct": [
+      "t-09",
+      "t-07",
+      "b-11",
+      "t-15",
+      "t-06"
+    ],
+    "both_wrong": [
+      "t-13"
+    ],
+    "video_correct_audio_wrong": []
+  },
+  "agreement_counts": {
+    "Audio Correct": 5,
+    "Both Correct": 4,
+    "Both Wrong": 1
+  }
+}
