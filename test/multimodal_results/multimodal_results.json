@@ -1,0 +1,146 @@
+{
+  "audio_only": {
+    "accuracy": 0.9,
+    "predictions": [
+      1,
+      1,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0
+    ]
+  },
+  "video_only": {
+    "accuracy": 0.4,
+    "predictions": [
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1
+    ]
+  },
+  "multimodal_fusion": {
+    "best_audio_weight": 1.0,
+    "best_video_weight": 0.0,
+    "accuracy": 0.9,
+    "precision": 1.0,
+    "recall": 0.8,
+    "f1_score": 0.8888888888888888,
+    "roc_auc": 1.0,
+    "predictions": [
+      1,
+      1,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0
+    ],
+    "confusion_matrix": [
+      [
+        5,
+        0
+      ],
+      [
+        1,
+        4
+      ]
+    ]
+  },
+  "test_videos": {
+    "ids": [
+      "t-09",
+      "t-12",
+      "b-04",
+      "t-07",
+      "t-13",
+      "b-11",
+      "t-15",
+      "t-03",
+      "b-02",
+      "t-06"
+    ],
+    "true_labels": [
+      1,
+      1,
+      0,
+      0,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0
+    ]
+  },
+  "fusion_weights_tested": [
+    {
+      "audio_weight": 0.0,
+      "video_weight": 1.0,
+      "accuracy": 0.4
+    },
+    {
+      "audio_weight": 0.1,
+      "video_weight": 0.9,
+      "accuracy": 0.6
+    },
+    {
+      "audio_weight": 0.2,
+      "video_weight": 0.8,
+      "accuracy": 0.6
+    },
+    {
+      "audio_weight": 0.30000000000000004,
+      "video_weight": 0.7,
+      "accuracy": 0.6
+    },
+    {
+      "audio_weight": 0.4,
+      "video_weight": 0.6,
+      "accuracy": 0.6
+    },
+    {
+      "audio_weight": 0.5,
+      "video_weight": 0.5,
+      "accuracy": 0.7
+    },
+    {
+      "audio_weight": 0.6000000000000001,
+      "video_weight": 0.3999999999999999,
+      "accuracy": 0.7
+    },
+    {
+      "audio_weight": 0.7000000000000001,
+      "video_weight": 0.29999999999999993,
+      "accuracy": 0.7
+    },
+    {
+      "audio_weight": 0.8,
+      "video_weight": 0.19999999999999996,
+      "accuracy": 0.8
+    },
+    {
+      "audio_weight": 0.9,
+      "video_weight": 0.09999999999999998,
+      "accuracy": 0.8
+    },
+    {
+      "audio_weight": 1.0,
+      "video_weight": 0.0,
+      "accuracy": 0.9
+    }
+  ]
+}

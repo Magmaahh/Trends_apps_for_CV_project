@@ -1,0 +1,290 @@
+[
+  {
+    "video": "b-08.mp4",
+    "true_label": "REAL",
+    "predicted_label": "UNKNOWN",
+    "confidence": 0.0,
+    "fake_probability": 0.5,
+    "frames_analyzed": 50,
+    "frames_with_faces": 0
+  },
+  {
+    "video": "b-09.mp4",
+    "true_label": "REAL",
+    "predicted_label": "UNKNOWN",
+    "confidence": 0.0,
+    "fake_probability": 0.5,
+    "frames_analyzed": 50,
+    "frames_with_faces": 0
+  },
+  {
+    "video": "t-09.mp4",
+    "true_label": "REAL",
+    "predicted_label": "UNKNOWN",
+    "confidence": 0.0,
+    "fake_probability": 0.5,
+    "frames_analyzed": 50,
+    "frames_with_faces": 0
+  },
+  {
+    "video": "t-08.mp4",
+    "true_label": "REAL",
+    "predicted_label": "UNKNOWN",
+    "confidence": 0.0,
+    "fake_probability": 0.5,
+    "frames_analyzed": 50,
+    "frames_with_faces": 0
+  },
+  {
+    "video": "b-15.mp4",
+    "true_label": "REAL",
+    "predicted_label": "UNKNOWN",
+    "confidence": 0.0,
+    "fake_probability": 0.5,
+    "frames_analyzed": 50,
+    "frames_with_faces": 0
+  },
+  {
+    "video": "t-11.mp4",
+    "true_label": "REAL",
+    "predicted_label": "UNKNOWN",
+    "confidence": 0.0,
+    "fake_probability": 0.5,
+    "frames_analyzed": 50,
+    "frames_with_faces": 0
+  },
+  {
+    "video": "t-10.mp4",
+    "true_label": "REAL",
+    "predicted_label": "UNKNOWN",
+    "confidence": 0.0,
+    "fake_probability": 0.5,
+    "frames_analyzed": 50,
+    "frames_with_faces": 0
+  },
+  {
+    "video": "b-14.mp4",
+    "true_label": "REAL",
+    "predicted_label": "UNKNOWN",
+    "confidence": 0.0,
+    "fake_probability": 0.5,
+    "frames_analyzed": 50,
+    "frames_with_faces": 0
+  },
+  {
+    "video": "t-12.mp4",
+    "true_label": "REAL",
+    "predicted_label": "UNKNOWN",
+    "confidence": 0.0,
+    "fake_probability": 0.5,
+    "frames_analyzed": 50,
+    "frames_with_faces": 0
+  },
+  {
+    "video": "t-13.mp4",
+    "true_label": "REAL",
+    "predicted_label": "UNKNOWN",
+    "confidence": 0.0,
+    "fake_probability": 0.5,
+    "frames_analyzed": 50,
+    "frames_with_faces": 0
+  },
+  {
+    "video": "b-13.mp4",
+    "true_label": "REAL",
+    "predicted_label": "UNKNOWN",
+    "confidence": 0.0,
+    "fake_probability": 0.5,
+    "frames_analyzed": 50,
+    "frames_with_faces": 0
+  },
+  {
+    "video": "b-12.mp4",
+    "true_label": "REAL",
+    "predicted_label": "UNKNOWN",
+    "confidence": 0.0,
+    "fake_probability": 0.5,
+    "frames_analyzed": 50,
+    "frames_with_faces": 0
+  },
+  {
+    "video": "b-10.mp4",
+    "true_label": "REAL",
+    "predicted_label": "UNKNOWN",
+    "confidence": 0.0,
+    "fake_probability": 0.5,
+    "frames_analyzed": 50,
+    "frames_with_faces": 0
+  },
+  {
+    "video": "t-14.mp4",
+    "true_label": "REAL",
+    "predicted_label": "UNKNOWN",
+    "confidence": 0.0,
+    "fake_probability": 0.5,
+    "frames_analyzed": 50,
+    "frames_with_faces": 0
+  },
+  {
+    "video": "t-15.mp4",
+    "true_label": "REAL",
+    "predicted_label": "UNKNOWN",
+    "confidence": 0.0,
+    "fake_probability": 0.5,
+    "frames_analyzed": 50,
+    "frames_with_faces": 0
+  },
+  {
+    "video": "b-11.mp4",
+    "true_label": "REAL",
+    "predicted_label": "UNKNOWN",
+    "confidence": 0.0,
+    "fake_probability": 0.5,
+    "frames_analyzed": 50,
+    "frames_with_faces": 0
+  },
+  {
+    "video": "b-01.mp4",
+    "true_label": "FAKE",
+    "predicted_label": "UNKNOWN",
+    "confidence": 0.0,
+    "fake_probability": 0.5,
+    "frames_analyzed": 50,
+    "frames_with_faces": 0
+  },
+  {
+    "video": "t-05.mp4",
+    "true_label": "FAKE",
+    "predicted_label": "UNKNOWN",
+    "confidence": 0.0,
+    "fake_probability": 0.5,
+    "frames_analyzed": 50,
+    "frames_with_faces": 0
+  },
+  {
+    "video": "t-04.mp4",
+    "true_label": "FAKE",
+    "predicted_label": "UNKNOWN",
+    "confidence": 0.0,
+    "fake_probability": 0.5,
+    "frames_analyzed": 50,
+    "frames_with_faces": 0
+  },
+  {
+    "video": "b-00.mp4",
+    "true_label": "FAKE",
+    "predicted_label": "UNKNOWN",
+    "confidence": 0.0,
+    "fake_probability": 0.5,
+    "frames_analyzed": 50,
+    "frames_with_faces": 0
+  },
+  {
+    "video": "b-02.mp4",
+    "true_label": "FAKE",
+    "predicted_label": "UNKNOWN",
+    "confidence": 0.0,
+    "fake_probability": 0.5,
+    "frames_analyzed": 50,
+    "frames_with_faces": 0
+  },
+  {
+    "video": "t-06.mp4",
+    "true_label": "FAKE",
+    "predicted_label": "UNKNOWN",
+    "confidence": 0.0,
+    "fake_probability": 0.5,
+    "frames_analyzed": 50,
+    "frames_with_faces": 0
+  },
+  {
+    "video": "t-07.mp4",
+    "true_label": "FAKE",
+    "predicted_label": "UNKNOWN",
+    "confidence": 0.0,
+    "fake_probability": 0.5,
+    "frames_analyzed": 50,
+    "frames_with_faces": 0
+  },
+  {
+    "video": "b-03.mp4",
+    "true_label": "FAKE",
+    "predicted_label": "UNKNOWN",
+    "confidence": 0.0,
+    "fake_probability": 0.5,
+    "frames_analyzed": 50,
+    "frames_with_faces": 0
+  },
+  {
+    "video": "b-07.mp4",
+    "true_label": "FAKE",
+    "predicted_label": "UNKNOWN",
+    "confidence": 0.0,
+    "fake_probability": 0.5,
+    "frames_analyzed": 50,
+    "frames_with_faces": 0
+  },
+  {
+    "video": "t-03.mp4",
+    "true_label": "FAKE",
+    "predicted_label": "UNKNOWN",
+    "confidence": 0.0,
+    "fake_probability": 0.5,
+    "frames_analyzed": 50,
+    "frames_with_faces": 0
+  },
+  {
+    "video": "t-02.mp4",
+    "true_label": "FAKE",
+    "predicted_label": "UNKNOWN",
+    "confidence": 0.0,
+    "fake_probability": 0.5,
+    "frames_analyzed": 50,
+    "frames_with_faces": 0
+  },
+  {
+    "video": "b-06.mp4",
+    "true_label": "FAKE",
+    "predicted_label": "UNKNOWN",
+    "confidence": 0.0,
+    "fake_probability": 0.5,
+    "frames_analyzed": 50,
+    "frames_with_faces": 0
+  },
+  {
+    "video": "b-04.mp4",
+    "true_label": "FAKE",
+    "predicted_label": "UNKNOWN",
+    "confidence": 0.0,
+    "fake_probability": 0.5,
+    "frames_analyzed": 50,
+    "frames_with_faces": 0
+  },
+  {
+    "video": "t-00.mp4",
+    "true_label": "FAKE",
+    "predicted_label": "UNKNOWN",
+    "confidence": 0.0,
+    "fake_probability": 0.5,
+    "frames_analyzed": 50,
+    "frames_with_faces": 0
+  },
+  {
+    "video": "t-01.mp4",
+    "true_label": "FAKE",
+    "predicted_label": "UNKNOWN",
+    "confidence": 0.0,
+    "fake_probability": 0.5,
+    "frames_analyzed": 50,
+    "frames_with_faces": 0
+  },
+  {
+    "video": "b-05.mp4",
+    "true_label": "FAKE",
+    "predicted_label": "UNKNOWN",
+    "confidence": 0.0,
+    "fake_probability": 0.5,
+    "frames_analyzed": 50,
+    "frames_with_faces": 0
+  }
+]
