@@ -185,6 +185,18 @@ class DeepfakeDemo:
         
         return np.array(X), video_ids, common_phonemes
     
+    def calculate_eer(self, y_true, y_scores):
+        """Calculate Equal Error Rate (EER) and corresponding threshold"""
+        fpr, tpr, thresholds = roc_curve(y_true, y_scores)
+        fnr = 1 - tpr
+        
+        # Find the point where FPR and FNR are closest (EER point)
+        eer_idx = np.argmin(np.abs(fnr - fpr))
+        eer = fpr[eer_idx]
+        eer_threshold = thresholds[eer_idx]
+        
+        return eer, eer_threshold, fpr[eer_idx], fnr[eer_idx]
+    
     def get_feature_names(self, common_phonemes):
         """Generate feature names"""
         feature_types = [
@@ -247,6 +259,9 @@ class DeepfakeDemo:
         f1 = f1_score(y_test, y_pred)
         roc_auc = roc_auc_score(y_test, y_pred_proba)
         
+        # Calculate EER
+        eer, eer_threshold, eer_fpr, eer_fnr = self.calculate_eer(y_test, y_pred_proba)
+        
         print("\n" + "=" * 50)
         print("📈 PERFORMANCE RESULTS".center(50))
         print("=" * 50)
@@ -255,6 +270,8 @@ class DeepfakeDemo:
         print(f"  Recall:     {recall:.1%}  {'✅' if recall >= 0.8 else '🟡'}")
         print(f"  F1 Score:   {f1:.3f}")
         print(f"  ROC-AUC:    {roc_auc:.3f}  {'✅ PERFECT!' if roc_auc >= 0.99 else '🟡'}")
+        print(f"  EER:        {eer:.1%}  {'✅ EXCELLENT!' if eer <= 0.05 else '🟡'}")
+        print(f"  EER Thresh: {eer_threshold:.3f}")
         print("=" * 50)
         
         # Cross-validation
@@ -271,7 +288,7 @@ class DeepfakeDemo:
         print(f"       Real     {cm[1,0]:4d}  {cm[1,1]:4d}")
         
         # Plot performance
-        self.plot_performance(cm, y_test, y_pred_proba, roc_auc)
+        self.plot_performance(cm, y_test, y_pred_proba, roc_auc, eer, eer_fpr, eer_fnr)
         
         # Save results
         results = {
@@ -280,6 +297,8 @@ class DeepfakeDemo:
             'recall': float(recall),
             'f1_score': float(f1),
             'roc_auc': float(roc_auc),
+            'eer': float(eer),
+            'eer_threshold': float(eer_threshold),
             'cv_scores': cv_scores.tolist(),
             'confusion_matrix': cm.tolist(),
             'test_videos': {
@@ -295,7 +314,7 @@ class DeepfakeDemo:
         
         return X_test, y_test, ids_test, y_pred, y_pred_proba
     
-    def plot_performance(self, cm, y_test, y_pred_proba, roc_auc):
+    def plot_performance(self, cm, y_test, y_pred_proba, roc_auc, eer, eer_fpr, eer_fnr):
         """Plot performance metrics"""
         fig, axes = plt.subplots(1, 2, figsize=(14, 5))
         
@@ -313,6 +332,14 @@ class DeepfakeDemo:
         axes[1].plot(fpr, tpr, linewidth=3, label=f'ROC (AUC = {roc_auc:.3f})', color='steelblue')
         axes[1].plot([0, 1], [0, 1], 'k--', linewidth=1.5, label='Random', alpha=0.5)
         axes[1].fill_between(fpr, tpr, alpha=0.2, color='steelblue')
+        
+        # Mark EER point
+        eer_tpr = 1 - eer_fnr
+        axes[1].plot(eer_fpr, eer_tpr, 'ro', markersize=10, 
+                    label=f'EER = {eer:.1%}', zorder=5)
+        axes[1].plot([eer_fpr, eer_fpr], [0, eer_tpr], 'r--', linewidth=1, alpha=0.5)
+        axes[1].plot([0, eer_fpr], [eer_tpr, eer_tpr], 'r--', linewidth=1, alpha=0.5)
+        
         axes[1].set_xlabel('False Positive Rate', fontsize=12, fontweight='bold')
         axes[1].set_ylabel('True Positive Rate', fontsize=12, fontweight='bold')
         axes[1].set_title('ROC Curve', fontsize=14, fontweight='bold')
@@ -517,6 +544,7 @@ class DeepfakeDemo:
    ✅ Precision:  100% (no false positives!)
    ✅ Recall:     80%  (4/5 real videos detected)
    ✅ ROC-AUC:    1.000 (perfect separation)
+   ✅ EER:        <5%  (excellent error balance)
 
 🔍 EXPLAINABILITY
    ✅ Global feature importance (top 30 features)
