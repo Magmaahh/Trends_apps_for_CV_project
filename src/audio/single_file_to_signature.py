@@ -287,11 +287,11 @@ def main():
                 arr = data[phoneme]
                 print(f"  {phoneme:8s}: shape {arr.shape}, dtype {arr.dtype}")
         
-        print(f"\n✓ Success! You can now use this signature for comparison.")
+        print(f"\nSuccess! You can now use this signature for comparison.")
         print(f"\nExample:")
         print(f"  python src/compare_npz_similarity.py {output_file} test/s1/bbaf2n.npz")
     else:
-        print("\n✗ Extraction failed. Please check the error messages above.")
+        print("\nExtraction failed. Please check the error messages above.")
 
 
 if __name__ == "__main__":

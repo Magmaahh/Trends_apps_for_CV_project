@@ -1,0 +1,58 @@
+{
+  "max_accuracy": {
+    "threshold": 0.9684552755201158,
+    "accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1_score": 1.0,
+    "tp": 12,
+    "tn": 132,
+    "fp": 0,
+    "fn": 0,
+    "far": 0.0,
+    "frr": 0.0,
+    "eer_distance": 0.0
+  },
+  "max_f1": {
+    "threshold": 0.9684552755201158,
+    "accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1_score": 1.0,
+    "tp": 12,
+    "tn": 132,
+    "fp": 0,
+    "fn": 0,
+    "far": 0.0,
+    "frr": 0.0,
+    "eer_distance": 0.0
+  },
+  "eer": {
+    "threshold": 0.9684552755201158,
+    "accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1_score": 1.0,
+    "tp": 12,
+    "tn": 132,
+    "fp": 0,
+    "fn": 0,
+    "far": 0.0,
+    "frr": 0.0,
+    "eer_distance": 0.0
+  },
+  "low_fpr": {
+    "threshold": 0.9684552755201158,
+    "accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1_score": 1.0,
+    "tp": 12,
+    "tn": 132,
+    "fp": 0,
+    "fn": 0,
+    "far": 0.0,
+    "frr": 0.0,
+    "eer_distance": 0.0
+  }
+}

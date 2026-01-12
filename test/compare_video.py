@@ -19,7 +19,7 @@ def load_signature(path):
         return json.load(f)
 
 def compare_video(test_video_path, signature_path, adapter_path=None):
-    print(f"--- Video Verification ---")
+    print(f"Video Verification")
     print(f"Test Video: {test_video_path}")
     print(f"Signature:  {signature_path}")
     
@@ -94,9 +94,9 @@ def compare_video(test_video_path, signature_path, adapter_path=None):
     print(f"FINAL SCORE: {final_score:.4f}")
     
     if final_score >= threshold:
-        print("✅ VERIFICATION PASSED (Identity Match)")
+        print("VERIFICATION PASSED (Identity Match)")
     else:
-        print("❌ VERIFICATION FAILED (Potential Impostor)")
+        print("VERIFICATION FAILED (Potential Impostor)")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

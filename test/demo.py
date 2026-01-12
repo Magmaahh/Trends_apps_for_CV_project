@@ -1,15 +1,7 @@
 """
 End-to-End Multimodal Identity Verification Demo
 
-This script provides a complete workflow from RAW videos to verification verdict:
-1. Auto-preprocessing (if needed): extract audio, MFA alignment, embeddings
-2. Training multimodal space on reference videos
-3. Testing on test videos
-4. Verdict: SAME/DIFFERENT PERSON
-
-Usage:
-    Modify the CONFIGURATION section below and run:
-    python demo.py
+Provides a complete workflow from video processing to verification verdict.
 """
 
 import os
@@ -127,41 +119,33 @@ def preprocess_video(video_path: Path, transcript_path: Path, processed_paths: D
         True if successful
     """
     video_id = video_path.stem
-    print(f"  🎬 Processing {video_id}...")
+    print(f"Processing {video_id}...")
     
     # Create directory
     processed_paths["dir"].mkdir(parents=True, exist_ok=True)
     
-    # 1. Extract audio
+    # Extract audio
     if not processed_paths["audio"].exists():
-        print(f"    📢 Extracting audio...")
         if not extract_audio(video_path, processed_paths["audio"]):
-            print(f"    ❌ Audio extraction failed")
+            print(f"Audio extraction failed")
             return False
-        print(f"    ✅ Audio extracted")
-    else:
-        print(f"    ⏭️  Audio already exists")
     
-    # 2. MFA alignment
-    # Check for existing TextGrid in various locations
-    mfa_aligned_tg = processed_paths["dir"] / "mfa_workspace" / "aligned" / f"{video_id}.TextGrid"
-    mfa_aligned_tg_unique = processed_paths["dir"] / f"mfa_workspace_{video_id}" / "aligned" / f"{video_id}.TextGrid"
-    
+    # MFA alignment
     if not processed_paths["textgrid"].exists():
-        # Check if it's in the aligned folder from a previous run
+        # Check for existing TextGrid
         found_existing = None
+        mfa_aligned_tg = processed_paths["dir"] / "mfa_workspace" / "aligned" / f"{video_id}.TextGrid"
+        mfa_aligned_tg_unique = processed_paths["dir"] / f"mfa_workspace_{video_id}" / "aligned" / f"{video_id}.TextGrid"
+        
         for existing_tg in [mfa_aligned_tg, mfa_aligned_tg_unique]:
             if existing_tg.exists():
                 found_existing = existing_tg
                 break
         
         if found_existing:
-            print(f"    📝 Found existing alignment, copying...")
             import shutil
             shutil.copy(found_existing, processed_paths["textgrid"])
-            print(f"    ✅ TextGrid copied")
         else:
-            print(f"    📝 MFA alignment...")
             tg = run_mfa_alignment(
                 video_id,
                 processed_paths["audio"],
@@ -169,35 +153,29 @@ def preprocess_video(video_path: Path, transcript_path: Path, processed_paths: D
                 processed_paths["dir"]
             )
             if not tg and not processed_paths["textgrid"].exists():
-                print(f"    ❌ MFA alignment failed")
+                print(f"MFA alignment failed")
                 return False
-            print(f"    ✅ MFA alignment complete")
-    else:
-        print(f"    ⏭️  TextGrid already exists")
     
-    # 3. Extract audio embeddings
+    # Extract audio embeddings
     if not processed_paths["audio_emb"].exists():
-        print(f"    🎵 Extracting audio embeddings...")
         if not extract_audio_embeddings(
             processed_paths["audio"],
             processed_paths["textgrid"],
             processed_paths["audio_emb"]
         ):
-            print(f"    ❌ Audio embeddings extraction failed")
+            print(f"Audio embeddings extraction failed")
             return False
     
-    # 4. Extract video embeddings  
+    # Extract video embeddings  
     if not processed_paths["video_emb"].exists():
-        print(f"    📹 Extracting video embeddings...")
         if not extract_video_embeddings(
             video_path,
             processed_paths["textgrid"],
             processed_paths["video_emb"]
         ):
-            print(f"    ❌ Video embeddings extraction failed")
+            print(f"Video embeddings extraction failed")
             return False
     
-    print(f"  ✅ {video_id} processed successfully")
     return True
 
 
@@ -217,8 +195,8 @@ def load_embeddings_from_folder(
     """
     video_files = get_video_files(video_folder, filter_list)
     
-    print(f"\n📂 Loading from {video_folder.name}/")
-    print(f"   Found {len(video_files)} videos")
+    print(f"Loading from {video_folder.name}/")
+    print(f"Found {len(video_files)} videos")
     
     audio_embeddings: Dict[str, List[np.ndarray]] = defaultdict(list)
     video_embeddings: Dict[str, List[np.ndarray]] = defaultdict(list)
@@ -245,7 +223,7 @@ def load_embeddings_from_folder(
             if not preprocess_video(video_path, transcript_path, paths):
                 continue
         else:
-            print(f"  ✓ {video_id}: Using cached embeddings")
+            print(f"{video_id}: Using cached embeddings")
         
         # Load embeddings
         audio_emb = load_audio_embeddings(str(paths["audio_emb"]))
@@ -267,7 +245,7 @@ def load_embeddings_from_folder(
         
         sample_names.append(video_id)
     
-    print(f"✓ Loaded {len(sample_names)} samples with {len(audio_embeddings)} phonemes")
+    print(f"Loaded {len(sample_names)} samples with {len(audio_embeddings)} phonemes")
     
     return dict(audio_embeddings), dict(video_embeddings), sample_names
 
@@ -320,20 +298,13 @@ def end_to_end_verification(
     Returns:
         Verification results dictionary with per-video results
     """
-    print("=" * 80)
-    print("🎬 END-TO-END MULTIMODAL IDENTITY VERIFICATION")
-    print("    (Per-Video Testing Mode)")
-    print("=" * 80)
-    
     ref_folder = Path(reference_folder)
     test_folder_path = Path(test_folder)
     processed_base = Path(processed_dir)
     transcript_base = Path(transcript_dir)
     
     # 1. Load reference embeddings
-    print("\n" + "=" * 80)
-    print("📚 STEP 1: Loading Reference Data")
-    print("=" * 80)
+    print(f"Loading Reference Data")
     
     ref_audio, ref_video, ref_names = load_embeddings_from_folder(
         ref_folder,
@@ -344,13 +315,11 @@ def end_to_end_verification(
     )
     
     if not ref_audio or not ref_video:
-        print("❌ Error: No reference data loaded")
+        print("Error: No reference data loaded")
         return {}
     
     # 2. Train multimodal space
-    print("\n" + "=" * 80)
-    print("🎓 STEP 2: Training Multimodal Space")
-    print("=" * 80)
+    print(f"Training Multimodal Space")
     
     # Convert to arrays
     ref_audio_arrays = {k: np.array(v) for k, v in ref_audio.items()}
@@ -358,11 +327,9 @@ def end_to_end_verification(
     
     space = MultimodalCompatibilitySpace(lambda_reg=lambda_reg)
     space.train(ref_audio_arrays, ref_video_arrays, min_samples=1)
-    
-    # 3. Test EACH video individually
-    print("\n" + "=" * 80)
-    print("🧪 STEP 3: Per-Video Testing")
-    print("=" * 80)
+
+    # Test EACH video individually
+    print(f"Per-Video Testing")
     
     video_files = get_video_files(test_folder_path, test_filter)
     
@@ -410,13 +377,8 @@ def end_to_end_verification(
         status = "🟢" if result["confidence"] > 50 else "🟡" if result["confidence"] > 25 else "🔴"
         print(f"     {status} {result['verdict']}: {result['confidence']:.1f}% ({result['compatible_phonemes']}/{result['total_phonemes']} phonemes)")
     
-    # 4. Aggregate results
-    print("\n" + "=" * 80)
-    print("📊 STEP 4: Aggregated Results")
-    print("=" * 80)
-    
     if not per_video_results:
-        print("❌ No videos tested")
+        print("No videos tested")
         return {}
     
     avg_compatibility = np.mean(all_compatibility_ratios)
@@ -439,10 +401,7 @@ def end_to_end_verification(
         v = r["verdict"]
         verdict_counts[v] = verdict_counts.get(v, 0) + 1
     
-    print()
-    print("━" * 80)
-    print(f"🎯 FINAL VERDICT: {final_verdict}")
-    print("━" * 80)
+    print(f"FINAL VERDICT: {final_verdict}")
     print(f"Videos tested:       {len(per_video_results)}")
     print(f"Average confidence:  {avg_confidence:.1f}% (±{std_confidence:.1f}%)")
     print(f"Average compatibility: {avg_compatibility*100:.1f}%")
@@ -450,7 +409,6 @@ def end_to_end_verification(
     print("Verdict breakdown:")
     for v, count in sorted(verdict_counts.items()):
         print(f"  - {v}: {count} videos")
-    print("━" * 80)
     
     return {
         "final_verdict": final_verdict,
@@ -467,14 +425,10 @@ def end_to_end_verification(
 
 
 def main():
-    print("=" * 80)
-    print("🎯 MULTIMODAL IDENTITY VERIFICATION DEMO")
-    print("=" * 80)
-    print()
+    print("MULTIMODAL IDENTITY VERIFICATION DEMO")
     print(f"Reference: {REFERENCE_VIDEO_FOLDER}")
     print(f"Test:      {TEST_VIDEO_FOLDER}")
     print(f"Preprocess: {'Yes' if AUTO_PREPROCESS else 'No'}")
-    print("=" * 80)
     
     # Run verification
     results = end_to_end_verification(
@@ -517,7 +471,7 @@ def main():
             
             json.dump(json_results, f, indent=2)
         
-        print(f"\n📄 Results saved to: {output_file}")
+        print(f"Results saved to: {output_file}")
 
     
     # ==========================================================================
@@ -550,7 +504,7 @@ def main():
         if all_audio_embeddings:
             aggregated = {p: np.mean(v, axis=0) for p, v in all_audio_embeddings.items()}
             np.savez(reference_audio_sig, **aggregated)
-            print(f"✓ Audio signature: {len(aggregated)} phonemes")
+            print(f"Audio signature: {len(aggregated)} phonemes")
     
     # Create video signature
     if not reference_video_sig.exists():
@@ -570,7 +524,7 @@ def main():
         if all_video_embeddings:
             aggregated = {p: np.mean(v, axis=0) for p, v in all_video_embeddings.items()}
             np.savez(reference_video_sig, **aggregated)
-            print(f"✓ Video signature: {len(aggregated)} phonemes")
+            print(f"Video signature: {len(aggregated)} phonemes")
     
     # Helper function for consistent color based on excellent percentage
     def get_status_color(excellent_pct):
@@ -591,11 +545,8 @@ def main():
     # ==========================================================================
     # AUDIO COMPARISON
     # ==========================================================================
-    print("\n" + "=" * 80)
-    print("🎵 AUDIO COMPARISON")
-    print("=" * 80)
+    print(f"\nAUDIO COMPARISON")
     print(f"{'Video':<10} | {'Type':<6} | {'Global Sim':<10} | {'≥0.9':<7} | {'Verdict'}")
-    print("-" * 70)
     
     audio_results_fake = []
     audio_results_real = []
@@ -614,7 +565,7 @@ def main():
                 "verdict": metrics["verdict"]
             })
             
-            status = get_status_color(metrics["excellent_percentage"])
+            status = ""
             print(f"{test_id:<10} | {'REAL':<6} | {global_sim:<10.4f} | {status} {metrics['excellent_percentage']:>5.1f}% | {metrics['verdict']}")
         else:
             print(f"{test_id:<10} | {'REAL':<6} | {'N/A':<10} | {'N/A':<7} | Not found")
@@ -635,7 +586,7 @@ def main():
                 "verdict": metrics["verdict"]
             })
             
-            status = get_status_color(metrics["excellent_percentage"])
+            status = ""
             print(f"{test_id:<10} | {'FAKE':<6} | {global_sim:<10.4f} | {status} {metrics['excellent_percentage']:>5.1f}% | {metrics['verdict']}")
         else:
             print(f"{test_id:<10} | {'FAKE':<6} | {'N/A':<10} | {'N/A':<7} | Not found")
@@ -652,11 +603,8 @@ def main():
     # ==========================================================================
     # VIDEO COMPARISON
     # ==========================================================================
-    print("\n" + "=" * 80)
-    print("📹 VIDEO COMPARISON")
-    print("=" * 80)
+    print(f"\nVIDEO COMPARISON")
     print(f"{'Video':<10} | {'Type':<6} | {'Global Sim':<10} | {'≥0.9':<7} | {'Verdict'}")
-    print("-" * 70)
     
     video_results_fake = []
     video_results_real = []
@@ -675,7 +623,7 @@ def main():
                 "verdict": metrics["verdict"]
             })
             
-            status = get_status_color(metrics["excellent_percentage"])
+            status = ""
             print(f"{test_id:<10} | {'REAL':<6} | {global_sim:<10.4f} | {status} {metrics['excellent_percentage']:>5.1f}% | {metrics['verdict']}")
         else:
             print(f"{test_id:<10} | {'REAL':<6} | {'N/A':<10} | {'N/A':<7} | Not found")
@@ -696,7 +644,7 @@ def main():
                 "verdict": metrics["verdict"]
             })
             
-            status = get_status_color(metrics["excellent_percentage"])
+            status = ""
             print(f"{test_id:<10} | {'FAKE':<6} | {global_sim:<10.4f} | {status} {metrics['excellent_percentage']:>5.1f}% | {metrics['verdict']}")
         else:
             print(f"{test_id:<10} | {'FAKE':<6} | {'N/A':<10} | {'N/A':<7} | Not found")
@@ -713,10 +661,9 @@ def main():
     # ==========================================================================
     # FINAL SUMMARY
     # ==========================================================================
-    print("\n" + "=" * 80)
-    print("📊 SUMMARY: REAL vs FAKE DETECTION")
-    print("=" * 80)
-    print("Color Legend: 🟢 ≥70% | 🟡 40-70% | 🟠 20-40% | 🔴 <20%")
+    # FINAL SUMMARY
+    print(f"\nSUMMARY: REAL vs FAKE DETECTION")
+    print("Legend: ≥70% | 40-70% | 20-40% | <20%")
     print()
     
     if audio_results_real and audio_results_fake:

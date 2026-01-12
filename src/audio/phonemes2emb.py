@@ -9,14 +9,9 @@ from collections import defaultdict
 
 class PhonemeEmbeddingExtractor:
     def __init__(self, model_name="facebook/wav2vec2-base-960h"):
-        """
-        Initialize the model and processor once.
-        """
-        print(f"Loading model: {model_name}...")
         self.processor = Wav2Vec2Processor.from_pretrained(model_name)
         self.model = Wav2Vec2Model.from_pretrained(model_name)
-        self.model.eval() # Set model to evaluation mode (no dropout, etc.)
-        print("Model loaded.")
+        self.model.eval()
 
     def process_file(self, audio_path, textgrid_path):
         """
@@ -24,7 +19,7 @@ class PhonemeEmbeddingExtractor:
         Each dictionary represents a phoneme with its embedding.
         """
         
-        # 1. Audio Loading and Resampling
+        # Audio Loading and Resampling
         # Wav2Vec2 requires audio at 16kHz
         try:
             audio, sr = librosa.load(audio_path, sr=16000)
@@ -32,7 +27,7 @@ class PhonemeEmbeddingExtractor:
             print(f"Error loading audio {audio_path}: {e}")
             return []
 
-        # 2. TextGrid Loading
+        # TextGrid Loading
         try:
             tg = textgrid.TextGrid.fromFile(textgrid_path)
         except Exception as e:
@@ -55,24 +50,7 @@ class PhonemeEmbeddingExtractor:
             print("Error: Unable to find a valid tier in the TextGrid.")
             return []
 
-        # 3. Model Inference (Get frame-by-frame embeddings)
-        inputs = self.processor(audio, sampling_rate=sr, return_tensors="pt")
-        
-        with torch.no_grad():
-            outputs = self.model(**inputs)
-        
-        # shape: (1, num_frames, 768) -> remove batch dimension -> (num_frames, 768)
-        full_embeddings = outputs.last_hidden_state.squeeze(0)
-        
-        # 4. Calculate Time -> Frame ratio
-        # We need to know how many seconds correspond to a single model frame
-        num_frames = full_embeddings.shape[0]
-        duration_seconds = len(audio) / sr
-        seconds_per_frame = duration_seconds / num_frames
-        
-        extracted_data = []
-
-        # 5. Iterate over phonemes and slice
+        # Iterate over phonemes and slice
         for interval in phone_tier:
             phoneme_label = interval.mark
             
@@ -175,28 +153,9 @@ class PhonemeEmbeddingExtractor:
             return None
         
         # Calculate mean embedding for each phoneme
-        print(f"\n--- Computing mean embeddings ---")
-        voice_profile = {}
-        
-        for phoneme_label, embeddings_list in phoneme_embeddings.items():
-            # Convert list of arrays to a 2D array: (num_occurrences, 768)
-            embeddings_array = np.array(embeddings_list)
-            
-            # Calculate mean along axis 0 to get a single embedding (768,)
-            mean_embedding = np.mean(embeddings_array, axis=0).astype(np.float32)
-            
-            voice_profile[phoneme_label] = mean_embedding
-            
-            print(f"  {phoneme_label}: {len(embeddings_list)} occurrences -> mean embedding (768,)")
-        
         # Save voice profile in .npz format
         np.savez(output_path, **voice_profile)
         
-        print(f"\n=== Extraction completed ===")
-        print(f"Files processed: {processed_files}/{len(audio_files)}")
-        print(f"Files skipped: {skipped_files}")
-        print(f"Total phonemes extracted: {total_phonemes}")
-        print(f"Unique phonemes in voice profile: {len(voice_profile)}")
         print(f"Voice profile saved to: {output_path}")
         
         return {

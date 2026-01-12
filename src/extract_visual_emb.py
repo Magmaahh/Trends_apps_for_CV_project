@@ -1,21 +1,7 @@
 """
 Visual Embedding Extraction Script for Gold Standard Profile Creation
 
-This script creates a "gold standard" identity profile from a collection of authentic
-videos of a person. It's the first step in the deepfake detection pipeline.
-
-Workflow:
-1. Prepare audio files and transcripts from GRID dataset format
-2. Run MFA (Montreal Forced Aligner) in batch mode on all videos
-3. Extract visual embeddings for each phoneme in each video
-4. Aggregate all embeddings to create a representative profile
-5. Save the gold standard profile as a JSON file
-
-Usage:
-    python getVisualEmbeddings.py dataset/raw/speaker1 \
-        --mfa-dict path/to/dict.txt \
-        --mfa-acoustic path/to/model.zip \
-        -o output/speaker1_profile.json
+Creates a "gold standard" identity profile from a collection of authentic videos of a person.
 """
 
 from __future__ import annotations
@@ -115,21 +101,6 @@ def extract_visual_emb(
     raw_dir: Path, mfa_dict: Path, mfa_acoustic: Path, output_json: Path, device: str = "auto"
 ) -> None:
     """
-    Extract visual embeddings from all videos and create a gold standard profile.
-    
-    This is the main function that orchestrates the entire profile creation process.
-    It processes multiple authentic videos of a person and aggregates their phoneme
-    embeddings into a single representative profile.
-    
-    Process:
-    1. Prepare .lab files from GRID .align files
-    2. Run MFA batch alignment to get phoneme timestamps for all videos
-    3. For each video:
-       - Extract visual embeddings for each phoneme
-       - Save embeddings to temporary .npz file
-    4. Aggregate all embeddings across videos
-    5. Save final gold standard profile as JSON
-    
     Args:
         raw_dir: Directory containing raw video files (.mpg/.mp4), audio (.wav),
                 and alignment files (.align) from GRID dataset
@@ -157,18 +128,18 @@ def extract_visual_emb(
     with tempfile.TemporaryDirectory(prefix="forge_") as tmp:
         tmp_dir = Path(tmp)
         
-        # Step 1: Prepare .lab transcript files from GRID .align files
+        # Prepare .lab transcript files from GRID .align files
         wav_lab_dir = prepare_lab_files(raw_dir, tmp_dir)
         
-        # Step 2: Run MFA batch alignment to get TextGrid files with phoneme timestamps
+        # Run MFA batch alignment to get TextGrid files with phoneme timestamps
         tg_dir = tmp_dir / "aligned"
         run_mfa_batch(wav_lab_dir, mfa_dict, mfa_acoustic, tg_dir)
 
-        # Step 3: Initialize video processing pipeline
+        # Initialize video processing pipeline
         pipeline = VideoPipeline(mfa_dict, mfa_acoustic, device=device)
         embedding_files: List[Path] = []
 
-        # Step 4: Process each video to extract phoneme embeddings
+        # Process each video to extract phoneme embeddings
         tg_files = list(tg_dir.glob("*.TextGrid"))
         for tg_file in tqdm(tg_files, desc="Processing videos"):
             stem = tg_file.stem
@@ -191,11 +162,10 @@ def extract_visual_emb(
                 np.savez_compressed(npz_path, **{k: np.stack(v) for k, v in embeddings.items()})
                 embedding_files.append(npz_path)
 
-        # Step 5: Aggregate embeddings from all videos into gold standard
-        # Computes mean embedding for each phoneme across all videos
+        # Aggregate embeddings from all videos into gold standard
         gold = aggregate_embeddings(embedding_files)
         
-        # Step 6: Save gold standard profile as JSON
+        # Save gold standard profile as JSON
         output_json.parent.mkdir(parents=True, exist_ok=True)
         output_json.write_text(json.dumps(gold, indent=2), encoding="utf-8")
         print(f"Gold standard profile saved to {output_json}")

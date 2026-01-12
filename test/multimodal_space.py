@@ -1,20 +1,8 @@
 """
 Multimodal Compatibility Space for Audio-Video Identity Verification.
 
-This script creates a "common space" for audio and video embeddings using
+Creates a "common space" for audio and video embeddings using
 per-phoneme linear compatibility maps (ridge regression).
-
-The idea:
-- For each phoneme p, learn W_p such that: v_p ≈ W_p · a_p
-- W_p captures "Given how this person sounds when pronouncing /p/, 
-  this is how their lips should look"
-
-Training: Uses only POI (Person Of Interest) data
-Inference: Verifies if test audio+video are consistent with POI
-
-Usage:
-    python multimodal_space.py --mode train --audio <audio.npz> --video <video.json> --output <model.npz>
-    python multimodal_space.py --mode verify --model <model.npz> --test <video.mp4>
 """
 
 import os
@@ -154,20 +142,17 @@ class MultimodalCompatibilitySpace:
         Returns:
             Dictionary with training statistics
         """
-        print("=" * 80)
-        print("🎓 TRAINING MULTIMODAL COMPATIBILITY SPACE")
-        print("=" * 80)
+        print(f"Training Multimodal Compatibility Space")
         
         # Find common phonemes
         common_phonemes = set(audio_embeddings.keys()) & set(video_embeddings.keys())
         
         if not common_phonemes:
-            print("❌ Error: No common phonemes between audio and video!")
+            print("Error: No common phonemes between audio and video!")
             return {}
         
         print(f"Common phonemes: {len(common_phonemes)}")
         print(f"Regularization λ: {self.lambda_reg}")
-        print()
         
         trained_phonemes = 0
         skipped_phonemes = 0
@@ -233,10 +218,9 @@ class MultimodalCompatibilitySpace:
                 }
                 
                 trained_phonemes += 1
-                print(f"  ✓ {phoneme:8s}: trained (n={n_samples}, error={mean_error:.4f}, thresh={self.thresholds[phoneme]:.4f})")
                 
             except Exception as e:
-                print(f"  ✗ {phoneme:8s}: failed ({e})")
+                print(f"  {phoneme:8s}: failed ({e})")
                 skipped_phonemes += 1
         
         # Compute global threshold
@@ -247,13 +231,10 @@ class MultimodalCompatibilitySpace:
             mult_global = mean_dist * THRESHOLD_MULTIPLIER
             self.global_threshold = max(stat_global, mult_global)
         
-        print()
-        print("=" * 80)
-        print(f"✓ Training completed!")
+        print(f"Training completed!")
         print(f"  Phonemes trained: {trained_phonemes}")
         print(f"  Phonemes skipped: {skipped_phonemes}")
         print(f"  Global threshold: {self.global_threshold:.4f}")
-        print("=" * 80)
         
         return self.training_stats
     
@@ -324,11 +305,6 @@ class MultimodalCompatibilitySpace:
         Returns:
             Verification results dictionary
         """
-        print()
-        print("=" * 80)
-        print("🔍 MULTIMODAL IDENTITY VERIFICATION")
-        print("=" * 80)
-        
         common_phonemes = set(test_audio_embeddings.keys()) & set(test_video_embeddings.keys()) & set(self.W_maps.keys())
         
         if not common_phonemes:
@@ -343,10 +319,9 @@ class MultimodalCompatibilitySpace:
         compatible_count = 0
         total_error = 0.0
         phoneme_details = []
-        
-        print(f"\nAnalyzing {len(common_phonemes)} common phonemes:\n")
+
+        print(f"Analyzing {len(common_phonemes)} common phonemes:")
         print(f"{'Phoneme':<10} {'Error':>10} {'Threshold':>10} {'Status':<15}")
-        print("-" * 50)
         
         for phoneme in sorted(common_phonemes):
             audio_emb = test_audio_embeddings[phoneme]
@@ -366,9 +341,9 @@ class MultimodalCompatibilitySpace:
             
             if is_compatible:
                 compatible_count += 1
-                status = "🟢 COMPATIBLE"
+                status = "COMPATIBLE"
             else:
-                status = "🔴 MISMATCH"
+                status = "MISMATCH"
             
             print(f"{phoneme:<10} {error:>10.4f} {threshold:>10.4f} {status:<15}")
             
@@ -398,15 +373,10 @@ class MultimodalCompatibilitySpace:
             verdict = "DIFFERENT PERSON"
             confidence = compatibility_ratio * 100
         
-        print("-" * 50)
-        print()
-        print("━" * 80)
-        print(f"🎯 VERDICT: {verdict}")
-        print("━" * 80)
+        print(f"VERDICT: {verdict}")
         print(f"Confidence:          {confidence:.1f}%")
         print(f"Compatible phonemes: {compatible_count}/{total_phonemes} ({compatibility_ratio*100:.1f}%)")
         print(f"Average error:       {avg_error:.4f}")
-        print("━" * 80)
         
         return {
             "verdict": verdict,
@@ -434,7 +404,7 @@ class MultimodalCompatibilitySpace:
             data[f"centroid_video_{phoneme}"] = self.centroids_video.get(phoneme, np.array([]))
         
         np.savez(output_path, **data)
-        print(f"✓ Model saved to: {output_path}")
+        print(f"Model saved to: {output_path}")
     
     def load(self, model_path: str):
         """Load a trained model from a .npz file."""
@@ -455,7 +425,7 @@ class MultimodalCompatibilitySpace:
             if f"centroid_video_{phoneme}" in data:
                 self.centroids_video[phoneme] = data[f"centroid_video_{phoneme}"]
         
-        print(f"✓ Model loaded from: {model_path}")
+        print(f"Model loaded from: {model_path}")
         print(f"  Phonemes: {len(self.W_maps)}")
         print(f"  Global threshold: {self.global_threshold:.4f}")
 
@@ -612,7 +582,7 @@ class DatasetLoader:
             if len(sample_names) % 20 == 0:
                 print(f"  Loaded {len(sample_names)} samples...")
         
-        print(f"✓ Loaded {len(sample_names)} samples with {len(audio_embeddings)} phonemes")
+        print(f"Loaded {len(sample_names)} samples with {len(audio_embeddings)} phonemes")
         
         return dict(audio_embeddings), dict(video_embeddings), sample_names
     
@@ -701,9 +671,7 @@ def train_from_dataset(
     Returns:
         Tuple of (trained_space, train_stats, test_results)
     """
-    print("=" * 80)
-    print(f"🎓 TRAINING FROM DATASET - Speaker {speaker_id}")
-    print("=" * 80)
+    print(f"TRAINING FROM DATASET - Speaker {speaker_id}")
     
     # Load data
     loader = DatasetLoader(base_path)
@@ -729,9 +697,7 @@ def train_from_dataset(
     train_stats = space.train(train_audio, train_video, min_samples=1)
     
     # Test on held-out data
-    print("\n" + "=" * 80)
-    print("📊 VALIDATION ON HELD-OUT SAMPLES (Same Person)")
-    print("=" * 80)
+    print("VALIDATION ON HELD-OUT SAMPLES (Same Person)")
     
     if test_audio and test_video:
         test_results = space.verify(test_audio, test_video)
@@ -765,9 +731,7 @@ def test_different_speaker(
     Returns:
         Verification results
     """
-    print("=" * 80)
-    print(f"🔴 TESTING ON DIFFERENT SPEAKER: {speaker_id}")
-    print("=" * 80)
+    print(f"TESTING ON DIFFERENT SPEAKER: {speaker_id}")
     
     # Load model
     space = MultimodalCompatibilitySpace()
@@ -788,10 +752,7 @@ def test_different_speaker(
 
 
 def main():
-    
-    print("=" * 80)
-    print("🎬 MULTIMODAL COMPATIBILITY SPACE")
-    print("=" * 80)
+    print("MULTIMODAL COMPATIBILITY SPACE")
     print(f"Mode:       {MODE}")
     print(f"Speaker:    {SPEAKER_ID}")
     print(f"Lambda:     {LAMBDA_REG}")

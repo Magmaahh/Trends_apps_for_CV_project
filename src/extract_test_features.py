@@ -1,26 +1,7 @@
 """
 Extract Test Features Script
 
-This script extracts both video and audio embeddings from test videos,
-preparing them for use with the multimodal identity matcher.
-
-Process:
-1. Extract audio from video (ffmpeg)
-2. Create .lab file with transcript
-3. Run MFA alignment to get phoneme timestamps
-4. Extract video embeddings (ResNet3D + MediaPipe)
-5. Extract audio embeddings (Wav2Vec2)
-6. Save in format compatible with IdentityMatcher
-
-Usage:
-    # Single video
-    python extract_test_features.py video.mp4 "BIN BLUE AT A FIVE AGAIN" -o test/output/
-    
-    # Batch processing
-    python extract_test_features.py video_dir/ --transcripts transcripts.txt -o test/batch/
-    
-    # With auto-transcription (Whisper)
-    python extract_test_features.py video.mp4 --auto-transcribe -o test/output/
+Extracts both video and audio embeddings from test videos for the multimodal identity matcher.
 """
 
 from __future__ import annotations
@@ -44,8 +25,8 @@ import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from src.audio.phonemes2emb import PhonemeEmbeddingExtractor
-from src.video.core import VideoFeatureExtractor
-from src.video.utils import parse_textgrid, load_video_frames
+from src.video import VideoFeatureExtractor
+from src.video.inference.utils import parse_textgrid, load_video_frames
 
 
 class TestFeatureExtractor:
@@ -72,7 +53,6 @@ class TestFeatureExtractor:
         self.device = device
         
         # Initialize extractors
-        print("Initializing extractors...")
         self.video_extractor = VideoFeatureExtractor(device=device)
         self.audio_extractor = PhonemeEmbeddingExtractor()
         
@@ -83,7 +63,6 @@ class TestFeatureExtractor:
             refine_landmarks=True,
             min_detection_confidence=0.5
         )
-        print("✓ Extractors initialized")
     
     def extract_audio(self, video_path: Path, output_dir: Path) -> Path:
         """
@@ -360,15 +339,13 @@ class TestFeatureExtractor:
         output_dir.mkdir(parents=True, exist_ok=True)
         video_stem = video_path.stem
         
-        print(f"\nProcessing: {video_path.name}")
-        print(f"Transcript: {transcript}")
+        print(f"Processing: {video_path.name}")
         
         # Create temp directory for MFA
         with tempfile.TemporaryDirectory(prefix="mfa_") as tmpdir:
             work_dir = Path(tmpdir)
             
             # Step 1: Extract audio
-            print("  [1/5] Extracting audio...")
             audio_path = self.extract_audio(video_path, work_dir)
             
             # Copy to output dir
@@ -376,13 +353,11 @@ class TestFeatureExtractor:
             final_audio_path.write_bytes(audio_path.read_bytes())
             
             # Step 2: Create .lab file
-            print("  [2/5] Creating transcript file...")
             lab_path = self.create_lab_file(audio_path, transcript)
             final_lab_path = output_dir / f"{video_stem}.lab"
             final_lab_path.write_text(lab_path.read_text())
             
             # Step 3: Run MFA alignment
-            print("  [3/5] Running MFA alignment...")
             mfa_output_dir = work_dir / "aligned"
             self.run_mfa_alignment(work_dir, mfa_output_dir)
             
@@ -395,26 +370,22 @@ class TestFeatureExtractor:
             final_textgrid_path.write_text(textgrid_path.read_text())
             
             # Step 4: Extract video embeddings
-            print("  [4/5] Extracting video embeddings...")
             video_emb_path = output_dir / f"{video_stem}_visual.json"
             video_embs = self.extract_video_embeddings(
                 video_path,
                 textgrid_path,
                 video_emb_path
             )
-            print(f"       → {len(video_embs)} phonemes extracted")
             
             # Step 5: Extract audio embeddings
-            print("  [5/5] Extracting audio embeddings...")
             audio_emb_path = output_dir / f"{video_stem}.npz"
             audio_embs = self.extract_audio_embeddings(
                 final_audio_path,
                 final_textgrid_path,
                 audio_emb_path
             )
-            print(f"       → {len(audio_embs)} phonemes extracted")
         
-        print(f"✓ Completed: {video_path.name}")
+        print(f"Completed: {video_path.name}")
         
         return {
             "video": video_path,
@@ -483,10 +454,10 @@ class TestFeatureExtractor:
                 )
                 results.append(result)
             except Exception as e:
-                print(f"\n✗ Error processing {video_path.name}: {e}")
+                print(f"Error processing {video_path.name}: {e}")
                 continue
         
-        print(f"\n✓ Batch complete: {len(results)}/{len(video_files)} videos processed")
+        print(f"Batch complete: {len(results)}/{len(video_files)} videos processed")
         return results
 
 
@@ -586,10 +557,6 @@ def main():
             return
     
     # Initialize extractor
-    print("=" * 80)
-    print("TEST FEATURES EXTRACTION")
-    print("=" * 80)
-    
     extractor = TestFeatureExtractor(
         mfa_dict=args.mfa_dict,
         mfa_acoustic=args.mfa_acoustic,
@@ -613,20 +580,11 @@ def main():
             results = [result]
         
         # Summary
-        print("\n" + "=" * 80)
-        print("EXTRACTION COMPLETE")
-        print("=" * 80)
         print(f"Videos processed: {len(results)}")
         print(f"Output directory: {args.output}")
-        print("\nGenerated files per video:")
-        print("  - {video_stem}.wav          (audio)")
-        print("  - {video_stem}.lab          (transcript)")
-        print("  - {video_stem}.TextGrid     (phoneme alignment)")
-        print("  - {video_stem}_visual.json  (video embeddings)")
-        print("  - {video_stem}.npz          (audio embeddings)")
         
     except Exception as e:
-        print(f"\n✗ Error: {e}")
+        print(f"Error: {e}")
         import traceback
         traceback.print_exc()
         return

@@ -30,7 +30,8 @@ def create_audio_signature(source_folder=None, output_dir=None, audio_folder=Non
         textgrid_folder: Direct path to folder with .TextGrid files (overrides source_folder)
     """
     extractor = PhonemeEmbeddingExtractor()
-    print("=== Voice Profile Extractor ===")
+    extractor = PhonemeEmbeddingExtractor()
+    print("Voice Profile Extractor")
     
     # Determine paths
     if audio_folder and textgrid_folder:
@@ -74,12 +75,12 @@ def create_audio_signature(source_folder=None, output_dir=None, audio_folder=Non
         stats = extractor.extract_voice_profile(audio_path, textgrid_path, output_file)
         
         if stats:
-            print("\n--- Final statistics ---")
+            print("Final statistics")
             print(f"Unique phonemes found: {', '.join(stats['phoneme_labels'][:10])}...")
             
             # Verify the created file
             if os.path.exists(output_file):
-                print(f"\n--- Output file verification ---")
+                print(f"Output file verification")
                 with np.load(output_file) as data:
                     print(f"File {output_file} contains {len(data.files)} phonemes:")
                     for phoneme in sorted(data.files)[:5]:
@@ -100,7 +101,7 @@ VIDEO_GOLD_FOLDER = os.path.join(os.path.dirname(__file__), "samples/s1")
 VIDEO_SIGNATURE_FILE = os.path.join(os.path.dirname(__file__), "signatures/s1/video_gold.json")
 
 def create_video_signature(source_folder=VIDEO_GOLD_FOLDER, output_file=VIDEO_SIGNATURE_FILE):
-    print("\n=== Video Profile Extractor ===")
+    print("Video Profile Extractor")
     
     # Initialize Pipeline
     # Note: You need MFA models downloaded. Assuming they are in dataset/output/mfa_data

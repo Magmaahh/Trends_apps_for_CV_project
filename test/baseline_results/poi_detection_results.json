@@ -1,0 +1,22 @@
+{
+  "poi": "s1",
+  "genuine_tests": [
+    {
+      "speaker_id": "s1",
+      "global_similarity": 0.9999999923642438,
+      "label": "GENUINE"
+    }
+  ],
+  "deepfake_tests": [
+    {
+      "speaker_id": "s10",
+      "global_similarity": 0.7100660824701048,
+      "num_phonemes": 7,
+      "label": "DEEPFAKE"
+    }
+  ],
+  "similarity_scores": {
+    "s1_genuine": 0.9999999923642438,
+    "s10": 0.7100660824701048
+  }
+}

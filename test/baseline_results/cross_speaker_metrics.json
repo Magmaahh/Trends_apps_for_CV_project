@@ -1,0 +1,31 @@
+{
+  "threshold": 0.9685,
+  "total_tests": 144,
+  "real_tests": 12,
+  "fake_tests": 132,
+  "accuracy": 1.0,
+  "precision": 1.0,
+  "recall": 1.0,
+  "f1_score": 1.0,
+  "roc_auc": 1.0,
+  "eer": 0.0,
+  "confusion_matrix": {
+    "tp": 12,
+    "tn": 132,
+    "fp": 0,
+    "fn": 0
+  },
+  "real_score_stats": {
+    "mean": 0.9999999946162803,
+    "std": 1.3099290581066837e-09,
+    "min": 0.9999999928480351,
+    "max": 0.9999999981384103
+  },
+  "fake_score_stats": {
+    "mean": 0.9364345263893068,
+    "std": 0.019931021034762835,
+    "min": 0.8815294045456425,
+    "max": 0.9684106428358489
+  },
+  "separation": 0.06356546822697351
+}

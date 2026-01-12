@@ -79,11 +79,11 @@ def compare_embeddings(
     """
     print(f"Loading embeddings from {file1.name}...")
     embeddings1 = load_embeddings(file1)
-    print(f"  ✓ Loaded {len(embeddings1)} phoneme types")
+    print(f"  Loaded {len(embeddings1)} phoneme types")
     
     print(f"Loading embeddings from {file2.name}...")
     embeddings2 = load_embeddings(file2)
-    print(f"  ✓ Loaded {len(embeddings2)} phoneme types")
+    print(f"  Loaded {len(embeddings2)} phoneme types")
     print()
     
     # Find common phonemes and compute similarities
@@ -206,30 +206,20 @@ def print_results(
         file1_name: Name of first file (reference signature)
         file2_name: Name of second file (sample to verify)
     """
-    print("=" * 80)
-    print(f"🔍 IDENTITY VERIFICATION ANALYSIS")
-    print("=" * 80)
+    print(f"IDENTITY VERIFICATION ANALYSIS")
     print(f"Reference: {file1_name}")
     print(f"Sample:    {file2_name}")
-    print()
     
     # Compute confidence and verdict
     metrics = compute_confidence_and_verdict(similarities)
     
     # Print prominent verdict section
-    print("━" * 80)
-    print(f"🎯 VERDICT: {metrics['verdict']}")
-    print("━" * 80)
+    print(f"VERDICT: {metrics['verdict']}")
     
-    # Confidence stars
-    stars = "★" * metrics['confidence_score'] + "☆" * (3 - metrics['confidence_score'])
-    
-    print(f"Confidence Level:  {stars} {metrics['confidence']} ({metrics['excellent_percentage']:.1f}%)")
+    print(f"Confidence Level:  {metrics['confidence']} ({metrics['excellent_percentage']:.1f}%)")
     print(f"Match Probability: {metrics['match_probability']:.1f}%")
     print(f"Reliable Matches:  {metrics['excellent_count']}/{metrics['total_phonemes']} phonemes (≥0.9 similarity)")
     print(f"Weighted Score:    {metrics['weighted_score']:.1f}/100")
-    print("━" * 80)
-    print()
     
     if similarities:
         # Sort phonemes by similarity (highest first)
@@ -240,48 +230,42 @@ def print_results(
         )
         
         print("DETAILED PHONEME ANALYSIS:")
-        print("-" * 80)
         for phoneme, sim in sorted_phonemes:
             # Visual indicator and category
             if sim >= 0.9:
-                indicator = "🟢"
+                indicator = ""
                 category = "[EXCELLENT - HIGH CONFIDENCE]"
             elif sim >= 0.8:
-                indicator = "🟡"
+                indicator = ""
                 category = "[ACCEPTABLE - MINOR WEIGHT]"
             elif sim >= 0.5:
-                indicator = "🟠"
+                indicator = ""
                 category = "[QUESTIONABLE - MINIMAL WEIGHT]"
             else:
-                indicator = "🔴"
+                indicator = ""
                 category = "[POOR - NO WEIGHT]"
             
-            print(f"  {indicator} {phoneme:8s}: {sim:7.4f}  {category}")
+            print(f"  {phoneme:8s}: {sim:7.4f}  {category}")
         
         print()
         
         # Enhanced statistics focused on 0.9 threshold
         print("STATISTICS BREAKDOWN:")
-        print(f"  🟢 Excellent (≥ 0.9):      {metrics['excellent_count']:3d} phonemes ({metrics['excellent_percentage']:5.1f}%) [PRIMARY CRITERION]")
-        print(f"  🟡 Acceptable (0.8-0.9):   {metrics['acceptable_count']:3d} phonemes ({(metrics['acceptable_count']/metrics['total_phonemes'])*100:5.1f}%) [Minor weight]")
-        print(f"  🟠 Questionable (0.5-0.8): {metrics['questionable_count']:3d} phonemes ({(metrics['questionable_count']/metrics['total_phonemes'])*100:5.1f}%) [Minimal weight]")
-        print(f"  🔴 Poor (< 0.5):           {metrics['poor_count']:3d} phonemes ({(metrics['poor_count']/metrics['total_phonemes'])*100:5.1f}%) [No weight]")
-        print()
-        print(f"  ℹ️  Global Similarity (reference): {global_similarity:.4f}")
-        print()
+        print(f"  Excellent (≥ 0.9):      {metrics['excellent_count']:3d} phonemes ({metrics['excellent_percentage']:5.1f}%) [PRIMARY CRITERION]")
+        print(f"  Acceptable (0.8-0.9):   {metrics['acceptable_count']:3d} phonemes ({(metrics['acceptable_count']/metrics['total_phonemes'])*100:5.1f}%) [Minor weight]")
+        print(f"  Questionable (0.5-0.8): {metrics['questionable_count']:3d} phonemes ({(metrics['questionable_count']/metrics['total_phonemes'])*100:5.1f}%) [Minimal weight]")
+        print(f"  Poor (< 0.5):           {metrics['poor_count']:3d} phonemes ({(metrics['poor_count']/metrics['total_phonemes'])*100:5.1f}%) [No weight]")
+        
+        print(f"  Global Similarity (reference): {global_similarity:.4f}")
     
     # Report phonemes only in one file
     if only_in_1:
-        print(f"⚠️  PHONEMES ONLY IN REFERENCE ({file1_name}):")
+        print(f"PHONEMES ONLY IN REFERENCE ({file1_name}):")
         print(f"  {', '.join(sorted(only_in_1))}")
-        print()
     
     if only_in_2:
-        print(f"⚠️  PHONEMES ONLY IN SAMPLE ({file2_name}):")
+        print(f"PHONEMES ONLY IN SAMPLE ({file2_name}):")
         print(f"  {', '.join(sorted(only_in_2))}")
-        print()
-    
-    print("=" * 80)
 
 
 def main():

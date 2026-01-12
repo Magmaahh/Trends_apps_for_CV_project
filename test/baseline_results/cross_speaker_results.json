@@ -1,0 +1,1801 @@
+{
+  "speakers": [
+    "s1",
+    "s10",
+    "s11",
+    "s12",
+    "s13",
+    "s14",
+    "s15",
+    "s16",
+    "s17",
+    "s18",
+    "s19",
+    "s2"
+  ],
+  "threshold": 0.9685,
+  "similarity_matrix": {
+    "s1": {
+      "s1": 0.9999999959007075,
+      "s10": 0.9279333850013118,
+      "s11": 0.8980574623098039,
+      "s12": 0.8903297122722007,
+      "s13": 0.913712489935239,
+      "s14": 0.9129367387456102,
+      "s15": 0.8948063240063725,
+      "s16": 0.9124477259183498,
+      "s17": 0.9051456711020194,
+      "s18": 0.8815294045456425,
+      "s19": 0.9050756498303637,
+      "s2": 0.9109380298056623
+    },
+    "s10": {
+      "s1": 0.9279333850013118,
+      "s10": 0.9999999945215866,
+      "s11": 0.9275009008203838,
+      "s12": 0.9016196892162274,
+      "s13": 0.9372822360770681,
+      "s14": 0.9253715684902826,
+      "s15": 0.9219387073606894,
+      "s16": 0.9432425050278656,
+      "s17": 0.9316704098037448,
+      "s18": 0.9275665289476679,
+      "s19": 0.9196226751431252,
+      "s2": 0.9396707742963292
+    },
+    "s11": {
+      "s1": 0.8980574623098039,
+      "s10": 0.9275009008203838,
+      "s11": 0.9999999947218873,
+      "s12": 0.9230687564115798,
+      "s13": 0.9501842674034361,
+      "s14": 0.9446051334531702,
+      "s15": 0.9327882009246709,
+      "s16": 0.953872546648204,
+      "s17": 0.9277243358200522,
+      "s18": 0.935361833262657,
+      "s19": 0.9301069724589889,
+      "s2": 0.9349796963378865
+    },
+    "s12": {
+      "s1": 0.8903297122722007,
+      "s10": 0.9016196892162274,
+      "s11": 0.9230687564115798,
+      "s12": 0.9999999941593849,
+      "s13": 0.9544965440241111,
+      "s14": 0.9511864481988604,
+      "s15": 0.9608631861526219,
+      "s16": 0.9289418843457401,
+      "s17": 0.9543947521817155,
+      "s18": 0.9285868182626371,
+      "s19": 0.9594663408619069,
+      "s2": 0.93495018010396
+    },
+    "s13": {
+      "s1": 0.913712489935239,
+      "s10": 0.9372822360770681,
+      "s11": 0.9501842674034361,
+      "s12": 0.9544965440241111,
+      "s13": 0.9999999940698711,
+      "s14": 0.9597865132197587,
+      "s15": 0.9660997065685677,
+      "s16": 0.9523037722947402,
+      "s17": 0.9611034673639313,
+      "s18": 0.9518334886130958,
+      "s19": 0.9684106428358489,
+      "s2": 0.9502393310741536
+    },
+    "s14": {
+      "s1": 0.9129367387456102,
+      "s10": 0.9253715684902826,
+      "s11": 0.9446051334531702,
+      "s12": 0.9511864481988604,
+      "s13": 0.9597865132197587,
+      "s14": 0.9999999936781696,
+      "s15": 0.9606409403056986,
+      "s16": 0.9401947678463807,
+      "s17": 0.9521452947173294,
+      "s18": 0.936435587458585,
+      "s19": 0.9562335316688642,
+      "s2": 0.9321187588367496
+    },
+    "s15": {
+      "s1": 0.8948063240063725,
+      "s10": 0.9219387073606894,
+      "s11": 0.9327882009246709,
+      "s12": 0.9608631861526219,
+      "s13": 0.9660997065685677,
+      "s14": 0.9606409403056986,
+      "s15": 0.9999999928480351,
+      "s16": 0.9345467395243436,
+      "s17": 0.9651088630893508,
+      "s18": 0.941919338653904,
+      "s19": 0.9627762680277828,
+      "s2": 0.9334282751367765
+    },
+    "s16": {
+      "s1": 0.9124477259183498,
+      "s10": 0.9432425050278656,
+      "s11": 0.953872546648204,
+      "s12": 0.9289418843457401,
+      "s13": 0.9523037722947402,
+      "s14": 0.9401947678463807,
+      "s15": 0.9345467395243436,
+      "s16": 0.9999999935703785,
+      "s17": 0.9505723230679329,
+      "s18": 0.9583369965694242,
+      "s19": 0.9424271295897675,
+      "s2": 0.9451685606880338
+    },
+    "s17": {
+      "s1": 0.9051456711020194,
+      "s10": 0.9316704098037448,
+      "s11": 0.9277243358200522,
+      "s12": 0.9543947521817155,
+      "s13": 0.9611034673639313,
+      "s14": 0.9521452947173294,
+      "s15": 0.9651088630893508,
+      "s16": 0.9505723230679329,
+      "s17": 0.9999999942995086,
+      "s18": 0.937437364573973,
+      "s19": 0.9591401344844571,
+      "s2": 0.9203996787446562
+    },
+    "s18": {
+      "s1": 0.8815294045456425,
+      "s10": 0.9275665289476679,
+      "s11": 0.935361833262657,
+      "s12": 0.9285868182626371,
+      "s13": 0.9518334886130958,
+      "s14": 0.936435587458585,
+      "s15": 0.941919338653904,
+      "s16": 0.9583369965694242,
+      "s17": 0.937437364573973,
+      "s18": 0.9999999953661692,
+      "s19": 0.9486792089192458,
+      "s2": 0.9323313280126112
+    },
+    "s19": {
+      "s1": 0.9050756498303637,
+      "s10": 0.9196226751431252,
+      "s11": 0.9301069724589889,
+      "s12": 0.9594663408619069,
+      "s13": 0.9684106428358489,
+      "s14": 0.9562335316688642,
+      "s15": 0.9627762680277828,
+      "s16": 0.9424271295897675,
+      "s17": 0.9591401344844571,
+      "s18": 0.9486792089192458,
+      "s19": 0.9999999981384103,
+      "s2": 0.9508842443001301
+    },
+    "s2": {
+      "s1": 0.9109380298056623,
+      "s10": 0.9396707742963292,
+      "s11": 0.9349796963378865,
+      "s12": 0.93495018010396,
+      "s13": 0.9502393310741536,
+      "s14": 0.9321187588367496,
+      "s15": 0.9334282751367765,
+      "s16": 0.9451685606880338,
+      "s17": 0.9203996787446562,
+      "s18": 0.9323313280126112,
+      "s19": 0.9508842443001301,
+      "s2": 0.9999999941212561
+    }
+  },
+  "real_tests": [
+    {
+      "reference": "s1",
+      "test": "s1",
+      "similarity": 0.9999999959007075,
+      "num_phonemes": 31,
+      "true_label": "REAL",
+      "prediction": "REAL",
+      "correct": true
+    },
+    {
+      "reference": "s10",
+      "test": "s10",
+      "similarity": 0.9999999945215866,
+      "num_phonemes": 30,
+      "true_label": "REAL",
+      "prediction": "REAL",
+      "correct": true
+    },
+    {
+      "reference": "s11",
+      "test": "s11",
+      "similarity": 0.9999999947218873,
+      "num_phonemes": 31,
+      "true_label": "REAL",
+      "prediction": "REAL",
+      "correct": true
+    },
+    {
+      "reference": "s12",
+      "test": "s12",
+      "similarity": 0.9999999941593849,
+      "num_phonemes": 30,
+      "true_label": "REAL",
+      "prediction": "REAL",
+      "correct": true
+    },
+    {
+      "reference": "s13",
+      "test": "s13",
+      "similarity": 0.9999999940698711,
+      "num_phonemes": 30,
+      "true_label": "REAL",
+      "prediction": "REAL",
+      "correct": true
+    },
+    {
+      "reference": "s14",
+      "test": "s14",
+      "similarity": 0.9999999936781696,
+      "num_phonemes": 32,
+      "true_label": "REAL",
+      "prediction": "REAL",
+      "correct": true
+    },
+    {
+      "reference": "s15",
+      "test": "s15",
+      "similarity": 0.9999999928480351,
+      "num_phonemes": 31,
+      "true_label": "REAL",
+      "prediction": "REAL",
+      "correct": true
+    },
+    {
+      "reference": "s16",
+      "test": "s16",
+      "similarity": 0.9999999935703785,
+      "num_phonemes": 32,
+      "true_label": "REAL",
+      "prediction": "REAL",
+      "correct": true
+    },
+    {
+      "reference": "s17",
+      "test": "s17",
+      "similarity": 0.9999999942995086,
+      "num_phonemes": 33,
+      "true_label": "REAL",
+      "prediction": "REAL",
+      "correct": true
+    },
+    {
+      "reference": "s18",
+      "test": "s18",
+      "similarity": 0.9999999953661692,
+      "num_phonemes": 33,
+      "true_label": "REAL",
+      "prediction": "REAL",
+      "correct": true
+    },
+    {
+      "reference": "s19",
+      "test": "s19",
+      "similarity": 0.9999999981384103,
+      "num_phonemes": 30,
+      "true_label": "REAL",
+      "prediction": "REAL",
+      "correct": true
+    },
+    {
+      "reference": "s2",
+      "test": "s2",
+      "similarity": 0.9999999941212561,
+      "num_phonemes": 32,
+      "true_label": "REAL",
+      "prediction": "REAL",
+      "correct": true
+    }
+  ],
+  "fake_tests": [
+    {
+      "reference": "s1",
+      "test": "s10",
+      "similarity": 0.9279333850013118,
+      "num_phonemes": 27,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s1",
+      "test": "s11",
+      "similarity": 0.8980574623098039,
+      "num_phonemes": 29,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s1",
+      "test": "s12",
+      "similarity": 0.8903297122722007,
+      "num_phonemes": 28,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s1",
+      "test": "s13",
+      "similarity": 0.913712489935239,
+      "num_phonemes": 28,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s1",
+      "test": "s14",
+      "similarity": 0.9129367387456102,
+      "num_phonemes": 29,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s1",
+      "test": "s15",
+      "similarity": 0.8948063240063725,
+      "num_phonemes": 29,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s1",
+      "test": "s16",
+      "similarity": 0.9124477259183498,
+      "num_phonemes": 29,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s1",
+      "test": "s17",
+      "similarity": 0.9051456711020194,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s1",
+      "test": "s18",
+      "similarity": 0.8815294045456425,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s1",
+      "test": "s19",
+      "similarity": 0.9050756498303637,
+      "num_phonemes": 28,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s1",
+      "test": "s2",
+      "similarity": 0.9109380298056623,
+      "num_phonemes": 31,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s10",
+      "test": "s1",
+      "similarity": 0.9279333850013118,
+      "num_phonemes": 27,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s10",
+      "test": "s11",
+      "similarity": 0.9275009008203838,
+      "num_phonemes": 28,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s10",
+      "test": "s12",
+      "similarity": 0.9016196892162274,
+      "num_phonemes": 28,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s10",
+      "test": "s13",
+      "similarity": 0.9372822360770681,
+      "num_phonemes": 28,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s10",
+      "test": "s14",
+      "similarity": 0.9253715684902826,
+      "num_phonemes": 28,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s10",
+      "test": "s15",
+      "similarity": 0.9219387073606894,
+      "num_phonemes": 28,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s10",
+      "test": "s16",
+      "similarity": 0.9432425050278656,
+      "num_phonemes": 28,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s10",
+      "test": "s17",
+      "similarity": 0.9316704098037448,
+      "num_phonemes": 28,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s10",
+      "test": "s18",
+      "similarity": 0.9275665289476679,
+      "num_phonemes": 28,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s10",
+      "test": "s19",
+      "similarity": 0.9196226751431252,
+      "num_phonemes": 28,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s10",
+      "test": "s2",
+      "similarity": 0.9396707742963292,
+      "num_phonemes": 27,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s11",
+      "test": "s1",
+      "similarity": 0.8980574623098039,
+      "num_phonemes": 29,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s11",
+      "test": "s10",
+      "similarity": 0.9275009008203838,
+      "num_phonemes": 28,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s11",
+      "test": "s12",
+      "similarity": 0.9230687564115798,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s11",
+      "test": "s13",
+      "similarity": 0.9501842674034361,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s11",
+      "test": "s14",
+      "similarity": 0.9446051334531702,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s11",
+      "test": "s15",
+      "similarity": 0.9327882009246709,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s11",
+      "test": "s16",
+      "similarity": 0.953872546648204,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s11",
+      "test": "s17",
+      "similarity": 0.9277243358200522,
+      "num_phonemes": 31,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s11",
+      "test": "s18",
+      "similarity": 0.935361833262657,
+      "num_phonemes": 31,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s11",
+      "test": "s19",
+      "similarity": 0.9301069724589889,
+      "num_phonemes": 29,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s11",
+      "test": "s2",
+      "similarity": 0.9349796963378865,
+      "num_phonemes": 29,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s12",
+      "test": "s1",
+      "similarity": 0.8903297122722007,
+      "num_phonemes": 28,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s12",
+      "test": "s10",
+      "similarity": 0.9016196892162274,
+      "num_phonemes": 28,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s12",
+      "test": "s11",
+      "similarity": 0.9230687564115798,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s12",
+      "test": "s13",
+      "similarity": 0.9544965440241111,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s12",
+      "test": "s14",
+      "similarity": 0.9511864481988604,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s12",
+      "test": "s15",
+      "similarity": 0.9608631861526219,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s12",
+      "test": "s16",
+      "similarity": 0.9289418843457401,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s12",
+      "test": "s17",
+      "similarity": 0.9543947521817155,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s12",
+      "test": "s18",
+      "similarity": 0.9285868182626371,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s12",
+      "test": "s19",
+      "similarity": 0.9594663408619069,
+      "num_phonemes": 29,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s12",
+      "test": "s2",
+      "similarity": 0.93495018010396,
+      "num_phonemes": 28,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s13",
+      "test": "s1",
+      "similarity": 0.913712489935239,
+      "num_phonemes": 28,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s13",
+      "test": "s10",
+      "similarity": 0.9372822360770681,
+      "num_phonemes": 28,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s13",
+      "test": "s11",
+      "similarity": 0.9501842674034361,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s13",
+      "test": "s12",
+      "similarity": 0.9544965440241111,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s13",
+      "test": "s14",
+      "similarity": 0.9597865132197587,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s13",
+      "test": "s15",
+      "similarity": 0.9660997065685677,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s13",
+      "test": "s16",
+      "similarity": 0.9523037722947402,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s13",
+      "test": "s17",
+      "similarity": 0.9611034673639313,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s13",
+      "test": "s18",
+      "similarity": 0.9518334886130958,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s13",
+      "test": "s19",
+      "similarity": 0.9684106428358489,
+      "num_phonemes": 29,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s13",
+      "test": "s2",
+      "similarity": 0.9502393310741536,
+      "num_phonemes": 28,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s14",
+      "test": "s1",
+      "similarity": 0.9129367387456102,
+      "num_phonemes": 29,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s14",
+      "test": "s10",
+      "similarity": 0.9253715684902826,
+      "num_phonemes": 28,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s14",
+      "test": "s11",
+      "similarity": 0.9446051334531702,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s14",
+      "test": "s12",
+      "similarity": 0.9511864481988604,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s14",
+      "test": "s13",
+      "similarity": 0.9597865132197587,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s14",
+      "test": "s15",
+      "similarity": 0.9606409403056986,
+      "num_phonemes": 31,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s14",
+      "test": "s16",
+      "similarity": 0.9401947678463807,
+      "num_phonemes": 32,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s14",
+      "test": "s17",
+      "similarity": 0.9521452947173294,
+      "num_phonemes": 32,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s14",
+      "test": "s18",
+      "similarity": 0.936435587458585,
+      "num_phonemes": 32,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s14",
+      "test": "s19",
+      "similarity": 0.9562335316688642,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s14",
+      "test": "s2",
+      "similarity": 0.9321187588367496,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s15",
+      "test": "s1",
+      "similarity": 0.8948063240063725,
+      "num_phonemes": 29,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s15",
+      "test": "s10",
+      "similarity": 0.9219387073606894,
+      "num_phonemes": 28,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s15",
+      "test": "s11",
+      "similarity": 0.9327882009246709,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s15",
+      "test": "s12",
+      "similarity": 0.9608631861526219,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s15",
+      "test": "s13",
+      "similarity": 0.9660997065685677,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s15",
+      "test": "s14",
+      "similarity": 0.9606409403056986,
+      "num_phonemes": 31,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s15",
+      "test": "s16",
+      "similarity": 0.9345467395243436,
+      "num_phonemes": 31,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s15",
+      "test": "s17",
+      "similarity": 0.9651088630893508,
+      "num_phonemes": 31,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s15",
+      "test": "s18",
+      "similarity": 0.941919338653904,
+      "num_phonemes": 31,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s15",
+      "test": "s19",
+      "similarity": 0.9627762680277828,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s15",
+      "test": "s2",
+      "similarity": 0.9334282751367765,
+      "num_phonemes": 29,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s16",
+      "test": "s1",
+      "similarity": 0.9124477259183498,
+      "num_phonemes": 29,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s16",
+      "test": "s10",
+      "similarity": 0.9432425050278656,
+      "num_phonemes": 28,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s16",
+      "test": "s11",
+      "similarity": 0.953872546648204,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s16",
+      "test": "s12",
+      "similarity": 0.9289418843457401,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s16",
+      "test": "s13",
+      "similarity": 0.9523037722947402,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s16",
+      "test": "s14",
+      "similarity": 0.9401947678463807,
+      "num_phonemes": 32,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s16",
+      "test": "s15",
+      "similarity": 0.9345467395243436,
+      "num_phonemes": 31,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s16",
+      "test": "s17",
+      "similarity": 0.9505723230679329,
+      "num_phonemes": 32,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s16",
+      "test": "s18",
+      "similarity": 0.9583369965694242,
+      "num_phonemes": 32,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s16",
+      "test": "s19",
+      "similarity": 0.9424271295897675,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s16",
+      "test": "s2",
+      "similarity": 0.9451685606880338,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s17",
+      "test": "s1",
+      "similarity": 0.9051456711020194,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s17",
+      "test": "s10",
+      "similarity": 0.9316704098037448,
+      "num_phonemes": 28,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s17",
+      "test": "s11",
+      "similarity": 0.9277243358200522,
+      "num_phonemes": 31,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s17",
+      "test": "s12",
+      "similarity": 0.9543947521817155,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s17",
+      "test": "s13",
+      "similarity": 0.9611034673639313,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s17",
+      "test": "s14",
+      "similarity": 0.9521452947173294,
+      "num_phonemes": 32,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s17",
+      "test": "s15",
+      "similarity": 0.9651088630893508,
+      "num_phonemes": 31,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s17",
+      "test": "s16",
+      "similarity": 0.9505723230679329,
+      "num_phonemes": 32,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s17",
+      "test": "s18",
+      "similarity": 0.937437364573973,
+      "num_phonemes": 33,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s17",
+      "test": "s19",
+      "similarity": 0.9591401344844571,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s17",
+      "test": "s2",
+      "similarity": 0.9203996787446562,
+      "num_phonemes": 31,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s18",
+      "test": "s1",
+      "similarity": 0.8815294045456425,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s18",
+      "test": "s10",
+      "similarity": 0.9275665289476679,
+      "num_phonemes": 28,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s18",
+      "test": "s11",
+      "similarity": 0.935361833262657,
+      "num_phonemes": 31,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s18",
+      "test": "s12",
+      "similarity": 0.9285868182626371,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s18",
+      "test": "s13",
+      "similarity": 0.9518334886130958,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s18",
+      "test": "s14",
+      "similarity": 0.936435587458585,
+      "num_phonemes": 32,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s18",
+      "test": "s15",
+      "similarity": 0.941919338653904,
+      "num_phonemes": 31,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s18",
+      "test": "s16",
+      "similarity": 0.9583369965694242,
+      "num_phonemes": 32,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s18",
+      "test": "s17",
+      "similarity": 0.937437364573973,
+      "num_phonemes": 33,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s18",
+      "test": "s19",
+      "similarity": 0.9486792089192458,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s18",
+      "test": "s2",
+      "similarity": 0.9323313280126112,
+      "num_phonemes": 31,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s19",
+      "test": "s1",
+      "similarity": 0.9050756498303637,
+      "num_phonemes": 28,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s19",
+      "test": "s10",
+      "similarity": 0.9196226751431252,
+      "num_phonemes": 28,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s19",
+      "test": "s11",
+      "similarity": 0.9301069724589889,
+      "num_phonemes": 29,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s19",
+      "test": "s12",
+      "similarity": 0.9594663408619069,
+      "num_phonemes": 29,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s19",
+      "test": "s13",
+      "similarity": 0.9684106428358489,
+      "num_phonemes": 29,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s19",
+      "test": "s14",
+      "similarity": 0.9562335316688642,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s19",
+      "test": "s15",
+      "similarity": 0.9627762680277828,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s19",
+      "test": "s16",
+      "similarity": 0.9424271295897675,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s19",
+      "test": "s17",
+      "similarity": 0.9591401344844571,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s19",
+      "test": "s18",
+      "similarity": 0.9486792089192458,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s19",
+      "test": "s2",
+      "similarity": 0.9508842443001301,
+      "num_phonemes": 28,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s2",
+      "test": "s1",
+      "similarity": 0.9109380298056623,
+      "num_phonemes": 31,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s2",
+      "test": "s10",
+      "similarity": 0.9396707742963292,
+      "num_phonemes": 27,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s2",
+      "test": "s11",
+      "similarity": 0.9349796963378865,
+      "num_phonemes": 29,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s2",
+      "test": "s12",
+      "similarity": 0.93495018010396,
+      "num_phonemes": 28,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s2",
+      "test": "s13",
+      "similarity": 0.9502393310741536,
+      "num_phonemes": 28,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s2",
+      "test": "s14",
+      "similarity": 0.9321187588367496,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s2",
+      "test": "s15",
+      "similarity": 0.9334282751367765,
+      "num_phonemes": 29,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s2",
+      "test": "s16",
+      "similarity": 0.9451685606880338,
+      "num_phonemes": 30,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s2",
+      "test": "s17",
+      "similarity": 0.9203996787446562,
+      "num_phonemes": 31,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s2",
+      "test": "s18",
+      "similarity": 0.9323313280126112,
+      "num_phonemes": 31,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    },
+    {
+      "reference": "s2",
+      "test": "s19",
+      "similarity": 0.9508842443001301,
+      "num_phonemes": 28,
+      "true_label": "FAKE",
+      "prediction": "FAKE",
+      "correct": true
+    }
+  ],
+  "per_speaker_stats": {
+    "s1": {
+      "genuine_scores": [
+        0.9999999959007075
+      ],
+      "impostor_scores": [
+        0.9279333850013118,
+        0.8980574623098039,
+        0.8903297122722007,
+        0.913712489935239,
+        0.9129367387456102,
+        0.8948063240063725,
+        0.9124477259183498,
+        0.9051456711020194,
+        0.8815294045456425,
+        0.9050756498303637,
+        0.9109380298056623
+      ],
+      "true_positives": 1,
+      "true_negatives": 11,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "accuracy": 1.0,
+      "genuine_mean": 0.9999999959007075,
+      "impostor_mean": 0.9048102357702341,
+      "separation": 0.09518976013047342
+    },
+    "s10": {
+      "genuine_scores": [
+        0.9999999945215866
+      ],
+      "impostor_scores": [
+        0.9279333850013118,
+        0.9275009008203838,
+        0.9016196892162274,
+        0.9372822360770681,
+        0.9253715684902826,
+        0.9219387073606894,
+        0.9432425050278656,
+        0.9316704098037448,
+        0.9275665289476679,
+        0.9196226751431252,
+        0.9396707742963292
+      ],
+      "true_positives": 1,
+      "true_negatives": 11,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "accuracy": 1.0,
+      "genuine_mean": 0.9999999945215866,
+      "impostor_mean": 0.9275835800167905,
+      "separation": 0.07241641450479608
+    },
+    "s11": {
+      "genuine_scores": [
+        0.9999999947218873
+      ],
+      "impostor_scores": [
+        0.8980574623098039,
+        0.9275009008203838,
+        0.9230687564115798,
+        0.9501842674034361,
+        0.9446051334531702,
+        0.9327882009246709,
+        0.953872546648204,
+        0.9277243358200522,
+        0.935361833262657,
+        0.9301069724589889,
+        0.9349796963378865
+      ],
+      "true_positives": 1,
+      "true_negatives": 11,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "accuracy": 1.0,
+      "genuine_mean": 0.9999999947218873,
+      "impostor_mean": 0.9325681914409849,
+      "separation": 0.06743180328090237
+    },
+    "s12": {
+      "genuine_scores": [
+        0.9999999941593849
+      ],
+      "impostor_scores": [
+        0.8903297122722007,
+        0.9016196892162274,
+        0.9230687564115798,
+        0.9544965440241111,
+        0.9511864481988604,
+        0.9608631861526219,
+        0.9289418843457401,
+        0.9543947521817155,
+        0.9285868182626371,
+        0.9594663408619069,
+        0.93495018010396
+      ],
+      "true_positives": 1,
+      "true_negatives": 11,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "accuracy": 1.0,
+      "genuine_mean": 0.9999999941593849,
+      "impostor_mean": 0.9352640283665056,
+      "separation": 0.06473596579287932
+    },
+    "s13": {
+      "genuine_scores": [
+        0.9999999940698711
+      ],
+      "impostor_scores": [
+        0.913712489935239,
+        0.9372822360770681,
+        0.9501842674034361,
+        0.9544965440241111,
+        0.9597865132197587,
+        0.9660997065685677,
+        0.9523037722947402,
+        0.9611034673639313,
+        0.9518334886130958,
+        0.9684106428358489,
+        0.9502393310741536
+      ],
+      "true_positives": 1,
+      "true_negatives": 11,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "accuracy": 1.0,
+      "genuine_mean": 0.9999999940698711,
+      "impostor_mean": 0.9514047690372681,
+      "separation": 0.04859522503260294
+    },
+    "s14": {
+      "genuine_scores": [
+        0.9999999936781696
+      ],
+      "impostor_scores": [
+        0.9129367387456102,
+        0.9253715684902826,
+        0.9446051334531702,
+        0.9511864481988604,
+        0.9597865132197587,
+        0.9606409403056986,
+        0.9401947678463807,
+        0.9521452947173294,
+        0.936435587458585,
+        0.9562335316688642,
+        0.9321187588367496
+      ],
+      "true_positives": 1,
+      "true_negatives": 11,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "accuracy": 1.0,
+      "genuine_mean": 0.9999999936781696,
+      "impostor_mean": 0.9428777529946626,
+      "separation": 0.05712224068350702
+    },
+    "s15": {
+      "genuine_scores": [
+        0.9999999928480351
+      ],
+      "impostor_scores": [
+        0.8948063240063725,
+        0.9219387073606894,
+        0.9327882009246709,
+        0.9608631861526219,
+        0.9660997065685677,
+        0.9606409403056986,
+        0.9345467395243436,
+        0.9651088630893508,
+        0.941919338653904,
+        0.9627762680277828,
+        0.9334282751367765
+      ],
+      "true_positives": 1,
+      "true_negatives": 11,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "accuracy": 1.0,
+      "genuine_mean": 0.9999999928480351,
+      "impostor_mean": 0.9431742317955254,
+      "separation": 0.05682576105250969
+    },
+    "s16": {
+      "genuine_scores": [
+        0.9999999935703785
+      ],
+      "impostor_scores": [
+        0.9124477259183498,
+        0.9432425050278656,
+        0.953872546648204,
+        0.9289418843457401,
+        0.9523037722947402,
+        0.9401947678463807,
+        0.9345467395243436,
+        0.9505723230679329,
+        0.9583369965694242,
+        0.9424271295897675,
+        0.9451685606880338
+      ],
+      "true_positives": 1,
+      "true_negatives": 11,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "accuracy": 1.0,
+      "genuine_mean": 0.9999999935703785,
+      "impostor_mean": 0.9420049955927983,
+      "separation": 0.05799499797758023
+    },
+    "s17": {
+      "genuine_scores": [
+        0.9999999942995086
+      ],
+      "impostor_scores": [
+        0.9051456711020194,
+        0.9316704098037448,
+        0.9277243358200522,
+        0.9543947521817155,
+        0.9611034673639313,
+        0.9521452947173294,
+        0.9651088630893508,
+        0.9505723230679329,
+        0.937437364573973,
+        0.9591401344844571,
+        0.9203996787446562
+      ],
+      "true_positives": 1,
+      "true_negatives": 11,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "accuracy": 1.0,
+      "genuine_mean": 0.9999999942995086,
+      "impostor_mean": 0.9422583904499239,
+      "separation": 0.05774160384958471
+    },
+    "s18": {
+      "genuine_scores": [
+        0.9999999953661692
+      ],
+      "impostor_scores": [
+        0.8815294045456425,
+        0.9275665289476679,
+        0.935361833262657,
+        0.9285868182626371,
+        0.9518334886130958,
+        0.936435587458585,
+        0.941919338653904,
+        0.9583369965694242,
+        0.937437364573973,
+        0.9486792089192458,
+        0.9323313280126112
+      ],
+      "true_positives": 1,
+      "true_negatives": 11,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "accuracy": 1.0,
+      "genuine_mean": 0.9999999953661692,
+      "impostor_mean": 0.9345470816199494,
+      "separation": 0.06545291374621987
+    },
+    "s19": {
+      "genuine_scores": [
+        0.9999999981384103
+      ],
+      "impostor_scores": [
+        0.9050756498303637,
+        0.9196226751431252,
+        0.9301069724589889,
+        0.9594663408619069,
+        0.9684106428358489,
+        0.9562335316688642,
+        0.9627762680277828,
+        0.9424271295897675,
+        0.9591401344844571,
+        0.9486792089192458,
+        0.9508842443001301
+      ],
+      "true_positives": 1,
+      "true_negatives": 11,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "accuracy": 1.0,
+      "genuine_mean": 0.9999999981384103,
+      "impostor_mean": 0.9457111634654983,
+      "separation": 0.05428883467291201
+    },
+    "s2": {
+      "genuine_scores": [
+        0.9999999941212561
+      ],
+      "impostor_scores": [
+        0.9109380298056623,
+        0.9396707742963292,
+        0.9349796963378865,
+        0.93495018010396,
+        0.9502393310741536,
+        0.9321187588367496,
+        0.9334282751367765,
+        0.9451685606880338,
+        0.9203996787446562,
+        0.9323313280126112,
+        0.9508842443001301
+      ],
+      "true_positives": 1,
+      "true_negatives": 11,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "accuracy": 1.0,
+      "genuine_mean": 0.9999999941212561,
+      "impostor_mean": 0.9350098961215408,
+      "separation": 0.06499009799971522
+    }
+  }
+}

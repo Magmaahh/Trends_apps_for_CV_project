@@ -17,7 +17,7 @@
       "compatibility_ratio": 0.6153846153846154,
       "compatible_phonemes": 24,
       "total_phonemes": 39,
-      "average_error": 4.865680978766488
+      "average_error": 4.8656809787664885
     },
     {
       "video_id": "t-01",
@@ -26,7 +26,7 @@
       "compatibility_ratio": 0.39473684210526316,
       "compatible_phonemes": 15,
       "total_phonemes": 38,
-      "average_error": 5.501050027306901
+      "average_error": 5.5010500273069
     },
     {
       "video_id": "t-02",
