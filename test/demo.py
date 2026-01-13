@@ -40,7 +40,7 @@ from create_signature import create_video_signature, create_audio_signature
 # =============================================================================
 
 # Choose person to test: "trump" or "biden"
-PERSON = "trump"
+PERSON = "biden"
 
 # Path to reference videos (for training) - REAL videos
 REFERENCE_VIDEO_FOLDER = f"../dataset/trump_biden/{PERSON}"
@@ -53,11 +53,10 @@ TEST_VIDEO_FOLDER = f"../dataset/trump_biden/{PERSON}"
 # Biden Real: b-08 to b-15
 REFERENCE_FILTER = [f"{PERSON[0]}-{i:02d}" for i in range(9, 15)]
 
-# Filter test videos: Use ONLY FAKE videos (IDs 00-07)
-# Trump Fake: t-00 to t-07
-# Biden Fake: b-00 to b-07
-#TEST_FILTER = [f"{PERSON[0]}-{i:02d}" for i in range(15, 16)] # REAL
-TEST_FILTER = [f"{PERSON[0]}-{i:02d}" for i in range(0, 8)] # FAKE
+# Filter test videos: FAKE (00-07) + REAL Held-out (08, 15)
+FAKE_IDS = [f"{PERSON[0]}-{i:02d}" for i in range(0, 8)]
+REAL_HELD_OUT_IDS = [f"{PERSON[0]}-{i:02d}" for i in [8, 15]]
+TEST_FILTER = FAKE_IDS + REAL_HELD_OUT_IDS
 
 # Output directory for processed data
 PROCESSED_DIR = "../dataset/trump_biden/processed"
@@ -472,8 +471,8 @@ def main():
     # AUDIO & VIDEO COMPARISON - Test ALL FAKE videos
     # ==========================================================================
     
-    processed_base = project_root / "dataset/trump_biden/processed/trump"
-    sig_path = Path(__file__).parent / "signatures/trump"
+    processed_base = project_root / f"dataset/trump_biden/processed/{PERSON}"
+    sig_path = Path(__file__).parent / f"signatures/{PERSON}"
     sig_path.mkdir(parents=True, exist_ok=True)
     
     # Create signatures if needed
@@ -533,8 +532,8 @@ def main():
             return "🔴"  # VERY LOW - <20%
     
     # Test IDs
-    fake_ids = [f"t-{i:02d}" for i in range(0, 8)]  # FAKE: t-00 to t-07
-    real_ids = ["t-08", "t-15"]  # REAL not in signature (signature uses t-09 to t-14)
+    fake_ids = FAKE_IDS
+    real_ids = REAL_HELD_OUT_IDS  # REAL not in signature (signature uses 09-14)
     
     # ==========================================================================
     # AUDIO COMPARISON
@@ -663,15 +662,27 @@ def main():
     if audio_results_real and audio_results_fake:
         real_same_audio = sum(1 for r in audio_results_real if "SAME" in r["verdict"])
         fake_same_audio = sum(1 for r in audio_results_fake if "SAME" in r["verdict"])
-        print(f"AUDIO - REAL: {real_same_audio}/{len(audio_results_real)} as SAME | FAKE: {fake_same_audio}/{len(audio_results_fake)} as SAME")
+        print(f"AUDIO      - REAL: {real_same_audio}/{len(audio_results_real)} as SAME | FAKE: {fake_same_audio}/{len(audio_results_fake)} as SAME")
     
     if video_results_real and video_results_fake:
         real_same_video = sum(1 for r in video_results_real if "SAME" in r["verdict"])
         fake_same_video = sum(1 for r in video_results_fake if "SAME" in r["verdict"])
-        print(f"VIDEO - REAL: {real_same_video}/{len(video_results_real)} as SAME | FAKE: {fake_same_video}/{len(video_results_fake)} as SAME")
-    
+        print(f"VIDEO      - REAL: {real_same_video}/{len(video_results_real)} as SAME | FAKE: {fake_same_video}/{len(video_results_fake)} as SAME")
+        
+    # Multimodal results from end_to_end_verification
+    if results and "per_video_results" in results:
+        mm_results = results["per_video_results"]
+        # Separate Real and Fake based on IDs
+        mm_real = [r for r in mm_results if r["video_id"] in real_ids]
+        mm_fake = [r for r in mm_results if r["video_id"] in fake_ids]
+        
+        if mm_real and mm_fake:
+            real_same_mm = sum(1 for r in mm_real if "SAME" in r["verdict"])
+            fake_same_mm = sum(1 for r in mm_fake if "SAME" in r["verdict"])
+            print(f"MULTIMODAL - REAL: {real_same_mm}/{len(mm_real)} as SAME | FAKE: {fake_same_mm}/{len(mm_fake)} as SAME")
+
     print()
-    print("Expected: REAL should have higher ≥0.9% than FAKE")
+    print("Expected: REAL should be classified as SAME, FAKE as DIFFERENT")
 
 if __name__ == "__main__":
     main()
