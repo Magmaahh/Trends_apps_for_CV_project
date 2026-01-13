@@ -40,7 +40,7 @@ from create_signature import create_video_signature, create_audio_signature
 # =============================================================================
 
 # Choose person to test: "trump" or "biden"
-PERSON = "biden"
+PERSON = "trump"
 
 # Path to reference videos (for training) - REAL videos
 REFERENCE_VIDEO_FOLDER = f"../dataset/trump_biden/{PERSON}"
@@ -519,17 +519,6 @@ def main():
             np.savez(reference_video_sig, **aggregated)
             print(f"Video signature: {len(aggregated)} phonemes")
     
-    # Helper function for consistent color based on excellent percentage
-    def get_status_color(excellent_pct):
-        """Return color emoji based on ≥0.9 percentage threshold"""
-        if excellent_pct >= 70:
-            return "🟢"  # HIGH - ≥70%
-        elif excellent_pct >= 40:
-            return "🟡"  # MEDIUM - 40-70%
-        elif excellent_pct >= 20:
-            return "🟠"  # LOW - 20-40%
-        else:
-            return "🔴"  # VERY LOW - <20%
     
     # Test IDs
     fake_ids = FAKE_IDS
@@ -588,10 +577,10 @@ def main():
     print("-" * 70)
     if audio_results_real:
         avg_real = np.mean([r["excellent_pct"] for r in audio_results_real])
-        print(f"{'AVG REAL':<10} |        |            | {get_status_color(avg_real)} {avg_real:>5.1f}% |")
+        print(f"{'AVG REAL':<10} |        |            | {avg_real:>5.1f}% |")
     if audio_results_fake:
         avg_fake = np.mean([r["excellent_pct"] for r in audio_results_fake])
-        print(f"{'AVG FAKE':<10} |        |            | {get_status_color(avg_fake)} {avg_fake:>5.1f}% |")
+        print(f"{'AVG FAKE':<10} |        |            | {avg_fake:>5.1f}% |")
     
     # ==========================================================================
     # VIDEO COMPARISON
@@ -646,10 +635,10 @@ def main():
     print("-" * 70)
     if video_results_real:
         avg_real = np.mean([r["excellent_pct"] for r in video_results_real])
-        print(f"{'AVG REAL':<10} |        |            | {get_status_color(avg_real)} {avg_real:>5.1f}% |")
+        print(f"{'AVG REAL':<10} |        |            | {avg_real:>5.1f}% |")
     if video_results_fake:
         avg_fake = np.mean([r["excellent_pct"] for r in video_results_fake])
-        print(f"{'AVG FAKE':<10} |        |            | {get_status_color(avg_fake)} {avg_fake:>5.1f}% |")
+        print(f"{'AVG FAKE':<10} |        |            | {avg_fake:>5.1f}% |")
     
     # ==========================================================================
     # FINAL SUMMARY
@@ -681,8 +670,7 @@ def main():
             fake_same_mm = sum(1 for r in mm_fake if "SAME" in r["verdict"])
             print(f"MULTIMODAL - REAL: {real_same_mm}/{len(mm_real)} as SAME | FAKE: {fake_same_mm}/{len(mm_fake)} as SAME")
 
-    print()
-    print("Expected: REAL should be classified as SAME, FAKE as DIFFERENT")
+    print("\nExpected: REAL should be classified as SAME, FAKE as DIFFERENT")
 
 if __name__ == "__main__":
     main()
