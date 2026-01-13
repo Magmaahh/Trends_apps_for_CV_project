@@ -665,10 +665,20 @@ def main():
         mm_real = [r for r in mm_results if r["video_id"] in real_ids]
         mm_fake = [r for r in mm_results if r["video_id"] in fake_ids]
         
-        if mm_real and mm_fake:
-            real_same_mm = sum(1 for r in mm_real if "SAME" in r["verdict"])
-            fake_same_mm = sum(1 for r in mm_fake if "SAME" in r["verdict"])
-            print(f"MULTIMODAL - REAL: {real_same_mm}/{len(mm_real)} as SAME | FAKE: {fake_same_mm}/{len(mm_fake)} as SAME")
+        if mm_real or mm_fake:
+            if mm_real:
+                real_same_mm = sum(1 for r in mm_real if "SAME" in r["verdict"])
+                real_str = f"REAL: {real_same_mm}/{len(mm_real)} as SAME"
+            else:
+                real_str = "REAL: N/A"
+                
+            if mm_fake:
+                fake_same_mm = sum(1 for r in mm_fake if "SAME" in r["verdict"])
+                fake_str = f"FAKE: {fake_same_mm}/{len(mm_fake)} as SAME"
+            else:
+                fake_str = "FAKE: N/A"
+                
+            print(f"MULTIMODAL - {real_str} | {fake_str}")
 
     print("\nExpected: REAL should be classified as SAME, FAKE as DIFFERENT")
 
