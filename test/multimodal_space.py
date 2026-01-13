@@ -1,16 +1,8 @@
-"""
-Multimodal Compatibility Space for Audio-Video Identity Verification.
-
-Creates a "common space" for audio and video embeddings using
-per-phoneme linear compatibility maps (ridge regression).
-"""
-
 import os
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
 
 import sys
 import json
-import argparse
 import numpy as np
 from pathlib import Path
 from typing import Dict, List, Tuple, Optional
@@ -58,7 +50,7 @@ DATASET_BASE_PATH = "../dataset/output"
 
 # =============================================================================
 
-
+# Multimodal Compatibility Space Class
 class MultimodalCompatibilitySpace:
     """
     Creates a compatibility space between audio and video embeddings

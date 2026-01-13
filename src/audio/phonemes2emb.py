@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 from collections import defaultdict
 
+# Phoneme Embedding Extraction Class
 class PhonemeEmbeddingExtractor:
     def __init__(self, model_name="facebook/wav2vec2-base-960h"):
         self.processor = Wav2Vec2Processor.from_pretrained(model_name)
@@ -166,8 +167,7 @@ class PhonemeEmbeddingExtractor:
             "phoneme_labels": sorted(voice_profile.keys())
         }
 
-# --- USAGE EXAMPLE ---
-
+# Main Execution example
 if __name__ == "__main__":
     
     extractor = PhonemeEmbeddingExtractor()

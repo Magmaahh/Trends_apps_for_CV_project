@@ -1,13 +1,12 @@
 import os
 import re
-import json
 import cv2
 import numpy as np
 import torch
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
-# --- CONFIGURATION ---
+# --- CONFIGURATION PATHS AND CONSTANTS ---
 
 # Dataset paths
 DATASET_INIT = "dataset/init"
@@ -32,8 +31,9 @@ GRID_GRAMMAR = {
     5: {"n": "now", "p": "please", "s": "soon"}
 }
 
-# --- UTILITIES ---
+# --- UTILITY FUNCTIONS ---
 
+# Loads speaker list
 def load_speakers():
     """
     Returns a sorted list of speaker IDs found in the dataset.
@@ -50,7 +50,7 @@ def load_speakers():
     speakers.sort(key=lambda x: int(x[1:]) if x[1:].isdigit() else 999)
     return speakers
 
-
+# Loads speakers with video embeddings
 def load_embedding_speakers():
     """
     Returns speaker IDs for which video embeddings exist.
@@ -67,6 +67,7 @@ def load_embedding_speakers():
     speakers.sort(key=lambda x: int(x[1:]) if x[1:].isdigit() else 999)
     return speakers
 
+# Parses TextGrid file
 def parse_textgrid(textgrid_path: str, tier_name: str = "phones") -> List[Dict[str, float]]:
     """
     Parse a TextGrid file to extract phoneme intervals with timestamps.
@@ -116,7 +117,7 @@ def parse_textgrid(textgrid_path: str, tier_name: str = "phones") -> List[Dict[s
                             )
         return intervals
 
-
+# Parses GRID .align files
 def parse_align_file(align_path: str) -> str:
     """
     Convert GRID dataset .align file to clean uppercase text.
@@ -134,7 +135,7 @@ def parse_align_file(align_path: str) -> str:
                     words.append(word)
     return " ".join(words).upper()
 
-
+# Loads video frames
 def load_video_frames(video_path: Path) -> Tuple[List[np.ndarray], float]:
     """
     Load all frames from a video file along with its frame rate.
@@ -156,7 +157,7 @@ def load_video_frames(video_path: Path) -> Tuple[List[np.ndarray], float]:
         raise RuntimeError("No frames read from video.")
     return frames, fps
 
-
+# Aggregates embeddings to create gold standard profile
 def aggregate_embeddings(embedding_files: List[Path]) -> Dict[str, List[float]]:
     """
     Aggregate embeddings from multiple videos to create a gold standard profile.
@@ -183,6 +184,7 @@ def aggregate_embeddings(embedding_files: List[Path]) -> Dict[str, List[float]]:
     
     return gold
 
+# Decodes GRID filenames
 def decode_grid_filename(stem: str):
     """
     Decode a 6-character GRID filename into a sentence.

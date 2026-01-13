@@ -20,6 +20,7 @@ from src.video.training.dataset_prep import build_gold_dictionary_for_speaker
 
 # --- CROSS CHECK LOGIC ---
 
+# Loads gold dictionary for a speaker
 def load_gold_dictionary(speaker_id):
     path = os.path.join(GOLD_STORE_DIR, f"{speaker_id}_gold_dictionary.json")
     if not os.path.exists(path):
@@ -27,23 +28,24 @@ def load_gold_dictionary(speaker_id):
     with open(path) as f:
         return json.load(f)
 
+# Performs cross-identity verification test
 def cross_identity_test(target_speaker="s1", adapter_path=None):
     print(f"\n--- CROSS IDENTITY CHECK: Target {target_speaker} ---")
     
-    # 1. Load Target Gold Dictionary
+    # Load Target Gold Dictionary
     target_gold = load_gold_dictionary(target_speaker)
     if not target_gold:
-        print(f"Errore: Gold dictionary per {target_speaker} non trovato.")
+        print(f"Error: Gold dictionary for {target_speaker} not found.")
         return
 
     gold_vectors = {k: np.array(v["vector"]) for k, v in target_gold.items()}
     
-    # 2. Find Impostors
+    # Find Impostors
     embedding_folders = [d for d in os.listdir(DATASET_OUTPUT) 
                          if os.path.isdir(os.path.join(DATASET_OUTPUT, d)) 
                          and d.startswith("video_embeddings_s")]
     
-    print(f"Confronto con {len(embedding_folders)} potenziali impostori...")
+    print(f"Checking against {len(embedding_folders)} potential impostors...")
 
     # Load Adapter
     adapter = None
@@ -88,16 +90,16 @@ def cross_identity_test(target_speaker="s1", adapter_path=None):
             results[impostor_id] = avg_score
 
     # 3. Visualization & Report
-    print("\nRISULTATI:")
+    print("\RESULTS:")
     sorted_res = sorted(results.items(), key=lambda x: int(x[0][1:]) if x[0][1:].isdigit() else 999)
     
     impostor_scores = []
     self_score = 0
     
     for spk, score in sorted_res:
-        status = "✅ BLOCKED" if score < 0.75 else "❌ PASSED"
+        status = "BLOCKED" if score < 0.75 else "PASSED"
         if spk == target_speaker:
-            status = "🔵 SELF"
+            status = "SELF"
             self_score = score
         else:
             impostor_scores.append(score)
@@ -108,8 +110,8 @@ def cross_identity_test(target_speaker="s1", adapter_path=None):
     security_gap = self_score - avg_impostor
     
     print("-" * 40)
-    print(f"MEDIA IMPOSTORI: {avg_impostor:.4f}")
-    print(f"GAP SICUREZZA:   {security_gap:.4f}")
+    print(f"AVERAGE IMPOSTORS: {avg_impostor:.4f}")
+    print(f"SECURITY GAP:   {security_gap:.4f}")
 
     # Plot
     plt.figure(figsize=(12, 6))
@@ -123,15 +125,16 @@ def cross_identity_test(target_speaker="s1", adapter_path=None):
     plt.xticks(rotation=45)
     plt.tight_layout()
     plt.savefig("cross_check_result.png")
-    print("\nGrafico salvato in cross_check_result.png")
+    print("\nPlot saved to cross_check_result.png")
 
 
 # --- MAIN VERIFICATION FLOW ---
 
+# Runs gold dictionary creation for all speakers
 def run_gold_creation(adapter_path):
     print("\n=== STEP 1: Building Gold Dictionaries with Adapter ===")
     if not os.path.exists(DATASET_OUTPUT):
-        print(f"ERRORE: {DATASET_OUTPUT} non esiste.")
+        print(f"ERROR: {DATASET_OUTPUT} does not exist.")
         return
 
     embedding_folders = [d for d in os.listdir(DATASET_OUTPUT) 
@@ -158,10 +161,10 @@ def main():
     parser.add_argument("--target", type=str, default="s1", help="Target speaker for cross-check")
     args = parser.parse_args()
 
-    # 1. Re-build Gold Dictionaries
+    # Re-build Gold Dictionaries
     run_gold_creation(args.adapter)
 
-    # 2. Run Cross-Check
+    # Run Cross-Check
     cross_identity_test(args.target, args.adapter)
 
 if __name__ == "__main__":

@@ -19,6 +19,7 @@ from .utils import (
 )
 from src.video.common.model import MouthEmbeddingResNet3D, VideoEmbeddingAdapter
 
+# Prepares .lab and .wav files for MFA alignment
 def prepare_speaker_for_mfa(speaker_id):
     """
     Creates .lab and .wav pairs for MFA alignment (for Dataset).
@@ -66,6 +67,7 @@ def prepare_speaker_for_mfa(speaker_id):
             shutil.copy(wav, os.path.join(output_dir, f"{file_id}.wav"))
 
 
+# Extracts visual phoneme embeddings for one speaker
 def extract_embeddings_for_speaker(speaker_id):
     """
     Extracts visual phoneme embeddings for one speaker (Dataset).
@@ -88,7 +90,7 @@ def extract_embeddings_for_speaker(speaker_id):
 
     existing_npz = list(Path(out_dir).glob("*.npz"))
     if len(existing_npz) >= 200:
-        print(f"SKIP: {speaker_id} già processato ({len(existing_npz)} embeddings trovati).")
+        print(f"SKIP: {speaker_id} already processed ({len(existing_npz)} embeddings found).")
         return
 
     tg_files = [f for f in os.listdir(tg_dir) if f.endswith(".TextGrid")]
@@ -164,6 +166,7 @@ def extract_embeddings_for_speaker(speaker_id):
                 **{k: np.array(v) for k, v in phoneme_embeddings.items()}
             )
 
+# Builds a mean gold embedding per phoneme for one speaker
 def build_gold_dictionary_for_speaker(speaker_id, adapter_path=None):
     """
     Builds a mean gold embedding per phoneme for one speaker.

@@ -3,7 +3,7 @@
 # Directory containing MFA workspaces
 MFA_OUTPUT_DIR="dataset/output"
 
-# Path to your dictionary and acoustic model
+# Path to dictionary and acoustic model
 DICT_PATH="dataset/output/mfa_data/english_us_arpa.dict"
 MODEL_PATH="dataset/output/mfa_data/english_us_arpa.zip"
 

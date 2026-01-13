@@ -2,7 +2,7 @@
 
 Questo modulo implementa una pipeline di Computer Vision per rilevare deepfake basati su lip-sync, analizzando la coerenza tra i fonemi (audio) e i visemi (movimento delle labbra).
 
-## 📂 Struttura del Progetto
+## Struttura del Progetto
 
 Il progetto è organizzato per separare chiaramente dati, codice e script:
 
@@ -15,7 +15,7 @@ Il progetto è organizzato per separare chiaramente dati, codice e script:
 
 ---
 
-## 🛠️ Setup Ambiente (Dual Environment)
+## Setup Ambiente (Dual Environment)
 
 Per garantire la compatibilità tra strumenti diversi (MFA richiede Python vecchio, Torch preferisce Python nuovo), utilizziamo un approccio a **due livelli**:
 
@@ -51,7 +51,7 @@ pip install -r requirements.txt
 
 ---
 
-## 🚀 Workflow: Creazione Dataset e Analisi
+## Workflow: Creazione Dataset e Analisi
 
 Segui questi passaggi per preparare i dati e analizzare i video.
 

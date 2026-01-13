@@ -1,14 +1,3 @@
-"""
-Script to compute cosine similarity between two .npz files.
-
-This script loads embeddings from two .npz files and computes the cosine
-similarity between matching phonemes. It's useful for comparing embeddings
-from different videos or comparing test embeddings with gold standards.
-
-Usage:
-    python compare_npz_similarity.py <file1.npz> <file2.npz>
-"""
-
 # Fix OpenMP duplicate library issue on macOS
 import os
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
@@ -19,7 +8,7 @@ from pathlib import Path
 from scipy.spatial.distance import cosine
 from typing import Dict, List, Tuple
 
-
+# Loads embeddings from .npz files
 def load_embeddings(npz_path: Path) -> Dict[str, np.ndarray]:
     """
     Load embeddings from an .npz file.
@@ -46,7 +35,7 @@ def load_embeddings(npz_path: Path) -> Dict[str, np.ndarray]:
     
     return embeddings
 
-
+# Computes cosine similarity between two vectors
 def compute_cosine_similarity(vec1: np.ndarray, vec2: np.ndarray) -> float:
     """
     Compute cosine similarity between two vectors.
@@ -62,7 +51,7 @@ def compute_cosine_similarity(vec1: np.ndarray, vec2: np.ndarray) -> float:
     similarity = 1 - cosine(vec1, vec2)
     return float(similarity) if not np.isnan(similarity) else 0.0
 
-
+# Compares embeddings from two .npz files
 def compare_embeddings(
     file1: Path,
     file2: Path
@@ -103,7 +92,7 @@ def compare_embeddings(
     
     return similarities, global_sim, list(phonemes_only_in_1), list(phonemes_only_in_2)
 
-
+# Computes confidence and verdict based on similarity scores
 def compute_confidence_and_verdict(similarities: Dict[str, float]) -> Dict[str, any]:
     """
     Compute confidence level and verdict based on similarity scores.

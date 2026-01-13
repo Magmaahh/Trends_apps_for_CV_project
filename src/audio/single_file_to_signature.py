@@ -1,16 +1,3 @@
-"""
-Script to create a voice signature from a single audio + TextGrid file pair.
-
-This script extracts phoneme embeddings from a single audio file using its
-corresponding TextGrid alignment, and saves them as a .npz file that can be
-used as a signature for comparison.
-
-Usage:
-    python single_file_to_signature.py
-    
-Then configure the file paths in the main() function.
-"""
-
 # Fix OpenMP duplicate library issue on macOS
 import os
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
@@ -23,22 +10,16 @@ from transformers import Wav2Vec2Processor, Wav2Vec2Model
 from pathlib import Path
 from collections import defaultdict
 
-
+# Single File Embedding Extractor Class
 class SingleFileEmbeddingExtractor:
-    """Extract embeddings from a single audio file."""
+    """Extract embeddings from a single audio file"""
     
     def __init__(self, model_name="facebook/wav2vec2-base-960h"):
-        """
-        Initialize the Wav2Vec2 model and processor.
-        
-        Args:
-            model_name: HuggingFace model name to use for embeddings
-        """
         print(f"Loading model: {model_name}...")
         self.processor = Wav2Vec2Processor.from_pretrained(model_name)
         self.model = Wav2Vec2Model.from_pretrained(model_name)
         self.model.eval()  # Evaluation mode (no dropout)
-        print("✓ Model loaded successfully")
+        print("Model loaded successfully")
     
     def extract_embeddings(self, audio_path, textgrid_path):
         """
@@ -57,20 +38,20 @@ class SingleFileEmbeddingExtractor:
         
         print(f"\nProcessing: {audio_path.name}")
         
-        # 1. Load audio (Wav2Vec2 requires 16kHz)
+        # Load audio (Wav2Vec2 requires 16kHz)
         try:
             audio, sr = librosa.load(audio_path, sr=16000)
-            print(f"  ✓ Audio loaded: {len(audio)/sr:.2f}s at {sr}Hz")
+            print(f"Audio loaded: {len(audio)/sr:.2f}s at {sr}Hz")
         except Exception as e:
-            print(f"  ✗ Error loading audio: {e}")
+            print(f"Error loading audio: {e}")
             return None
         
-        # 2. Load TextGrid
+        # Load TextGrid
         try:
             tg = textgrid.TextGrid.fromFile(str(textgrid_path))
-            print(f"  ✓ TextGrid loaded: {len(tg)} tiers")
+            print(f"TextGrid loaded: {len(tg)} tiers")
         except Exception as e:
-            print(f"  ✗ Error loading TextGrid: {e}")
+            print(f"Error loading TextGrid: {e}")
             return None
         
         # Find the phoneme tier
@@ -83,15 +64,15 @@ class SingleFileEmbeddingExtractor:
         # Fallback to second tier if "phones" not found
         if phone_tier is None and len(tg) > 1:
             phone_tier = tg[1]
-            print(f"  ⚠ Tier 'phones' not found, using tier '{phone_tier.name}'")
+            print(f"Tier 'phones' not found, using tier '{phone_tier.name}'")
         
         if phone_tier is None:
-            print(f"  ✗ No valid phoneme tier found in TextGrid")
+            print(f"No valid phoneme tier found in TextGrid")
             return None
         
-        print(f"  ✓ Using tier: {phone_tier.name} ({len(phone_tier)} intervals)")
+        print(f"Using tier: {phone_tier.name} ({len(phone_tier)} intervals)")
         
-        # 3. Extract embeddings using Wav2Vec2
+        # Extract embeddings using Wav2Vec2
         inputs = self.processor(audio, sampling_rate=sr, return_tensors="pt")
         
         with torch.no_grad():
@@ -100,14 +81,14 @@ class SingleFileEmbeddingExtractor:
         # Shape: (1, num_frames, 768) -> (num_frames, 768)
         full_embeddings = outputs.last_hidden_state.squeeze(0)
         
-        # 4. Calculate time to frame mapping
+        # Calculate time to frame mapping
         num_frames = full_embeddings.shape[0]
         duration_seconds = len(audio) / sr
         seconds_per_frame = duration_seconds / num_frames
         
-        print(f"  ✓ Extracted {num_frames} frames ({full_embeddings.shape[1]}-dimensional)")
+        print(f"Extracted {num_frames} frames ({full_embeddings.shape[1]}-dimensional)")
         
-        # 5. Extract embeddings for each phoneme
+        # Extract embeddings for each phoneme
         phoneme_embeddings = defaultdict(list)
         extracted_count = 0
         skipped_count = 0
@@ -141,8 +122,8 @@ class SingleFileEmbeddingExtractor:
             phoneme_embeddings[phoneme_label].append(phoneme_vector)
             extracted_count += 1
         
-        print(f"  ✓ Extracted {extracted_count} phonemes ({skipped_count} skipped)")
-        print(f"  ✓ Found {len(phoneme_embeddings)} unique phoneme types")
+        print(f"Extracted {extracted_count} phonemes ({skipped_count} skipped)")
+        print(f"Found {len(phoneme_embeddings)} unique phoneme types")
         
         return phoneme_embeddings
     
@@ -197,7 +178,7 @@ class SingleFileEmbeddingExtractor:
         np.savez(str(output_path), **signature_data)
         
         print(f"\n{'='*80}")
-        print(f"✓ Signature saved to: {output_path}")
+        print(f"Signature saved to: {output_path}")
         print(f"{'='*80}")
         
         # Return statistics
@@ -217,9 +198,7 @@ class SingleFileEmbeddingExtractor:
 def main():
     """Main function."""
     
-    # ========================================================================
-    # CONFIGURE PATHS HERE
-    # ========================================================================
+    # Paths
     audio_file = "../../test/s2/bbaf1n.wav"
     textgrid_file = "../../test/s2/bbaf1n.TextGrid"
     output_file = "../../test/s2/voice_sig.npz"
@@ -227,8 +206,7 @@ def main():
     # Set to True to average multiple occurrences of the same phoneme
     # Set to False to keep all occurrences (like the original test files)
     average_duplicates = False
-    # ========================================================================
-    
+
     print("="*80)
     print("SINGLE FILE TO SIGNATURE CONVERTER")
     print("="*80)
@@ -238,12 +216,12 @@ def main():
     textgrid_path = Path(textgrid_file)
     
     if not audio_path.exists():
-        print(f"\n✗ Error: Audio file not found: {audio_path}")
+        print(f"\nError: Audio file not found: {audio_path}")
         print("\nPlease update the 'audio_file' path in the script.")
         return
     
     if not textgrid_path.exists():
-        print(f"\n✗ Error: TextGrid file not found: {textgrid_path}")
+        print(f"\nError: TextGrid file not found: {textgrid_path}")
         print("\nPlease update the 'textgrid_file' path in the script.")
         return
     

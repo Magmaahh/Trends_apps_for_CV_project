@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import os
 import shutil
 import subprocess
 import tempfile
@@ -63,7 +62,7 @@ class VideoPipeline:
             workdir = Path(tmpdir)
             wav_path = workdir / f"{video.stem}.wav"
 
-            # 1) Prepare Audio
+            # Prepare Audio
             if audio_path and Path(audio_path).exists():
                 shutil.copy(audio_path, wav_path)
             else:
@@ -75,20 +74,20 @@ class VideoPipeline:
                 if proc.returncode != 0 or not wav_path.exists():
                     raise RuntimeError("Audio extraction failed: check ffmpeg and video file.")
 
-            # 2) Transcribe
+            # Transcribe
             transcript = self._transcribe(wav_path, transcript_text)
             if not transcript:
                 raise RuntimeError("Empty transcript: provide transcript_text or check Whisper.")
 
-            # 3) MFA align
+            # MFA align
             tg_path = self._run_mfa(workdir, wav_path, transcript)
 
-            # 4) Parse TextGrid
+            # Parse TextGrid
             intervals = parse_textgrid(str(tg_path), tier_name="phones")
             if not intervals:
                 raise RuntimeError("No phoneme intervals found in TextGrid.")
 
-            # 5) Embedding
+            # Embedding
             frames, fps = load_video_frames(video)
             embeddings: Dict[str, List[np.ndarray]] = {}
             total_frames = len(frames)

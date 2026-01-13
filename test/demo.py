@@ -1,9 +1,3 @@
-"""
-End-to-End Multimodal Identity Verification Demo
-
-Provides a complete workflow from video processing to verification verdict.
-"""
-
 import os
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
 

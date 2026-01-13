@@ -8,8 +8,9 @@ import torch.nn as nn
 from typing import List, Optional
 from torchvision.models.video import r3d_18, R3D_18_Weights
 
-# --- NEURAL NETWORKS ---
+# --- EMBEDDING MODELS ---
 
+# Mouth Embedding Model
 class MouthEmbeddingResNet3D(nn.Module):
     """
     3D ResNet adapted for grayscale mouth video clips.
@@ -47,6 +48,7 @@ class MouthEmbeddingResNet3D(nn.Module):
     def forward(self, x):
         return self.backbone(x)
 
+# Video Embedding Adapter
 class VideoEmbeddingAdapter(nn.Module):
     """
     Simple MLP adapter to project embeddings into a metric space
@@ -66,6 +68,7 @@ class VideoEmbeddingAdapter(nn.Module):
 
 # --- FEATURE EXTRACTOR ---
 
+# Video Feature Extractor
 class VideoFeatureExtractor:
     """
     Extract visual embeddings from mouth regions during speech.

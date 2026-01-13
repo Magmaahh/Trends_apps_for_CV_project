@@ -23,14 +23,14 @@ def compare_video(test_video_path, signature_path, adapter_path=None):
     print(f"Test Video: {test_video_path}")
     print(f"Signature:  {signature_path}")
     
-    # 1. Load Signature
+    # Load Signature
     if not os.path.exists(signature_path):
         print("Error: Signature file not found.")
         return
     signature = load_signature(signature_path)
     gold_vectors = {k: np.array(v["vector"]) for k, v in signature.items()}
     
-    # 2. Load Adapter (Optional)
+    # Load Adapter (Optional)
     adapter = None
     if adapter_path and os.path.exists(adapter_path):
         print(f"Using Adapter: {adapter_path}")
@@ -38,7 +38,7 @@ def compare_video(test_video_path, signature_path, adapter_path=None):
         adapter.load_state_dict(torch.load(adapter_path, map_location=DEVICE))
         adapter.eval()
     
-    # 3. Process Test Video
+    # Process Test Video
     # Using default MFA paths on Mac
     home = Path.home()
     mfa_dict = home / "Documents/MFA/pretrained_models/dictionary/english_us_arpa.dict"
@@ -57,7 +57,7 @@ def compare_video(test_video_path, signature_path, adapter_path=None):
         print(f"Error processing video: {e}")
         return
 
-    # 4. Compare
+    # Compare
     scores = []
     
     print("\nPhoneme Comparison:")
