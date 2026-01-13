@@ -1,89 +1,98 @@
 {
-  "final_verdict": "SAME PERSON",
-  "average_confidence": 72.20747890677288,
-  "std_confidence": 20.217157527449377,
-  "average_compatibility_ratio": 0.7064359029217823,
-  "videos_tested": 8,
+  "final_verdict": "LIKELY SAME PERSON",
+  "average_confidence": 68.39962048971526,
+  "std_confidence": 20.46909518507279,
+  "average_compatibility_ratio": 0.6602988451889759,
+  "videos_tested": 9,
   "verdict_breakdown": {
-    "SAME PERSON": 4,
-    "LIKELY SAME PERSON": 3,
-    "UNCERTAIN": 1
+    "LIKELY SAME PERSON": 4,
+    "UNCERTAIN": 1,
+    "SAME PERSON": 4
   },
   "per_video_results": [
     {
-      "video_id": "b-00",
-      "verdict": "SAME PERSON",
-      "confidence": 93.42105263157896,
-      "compatibility_ratio": 0.868421052631579,
-      "compatible_phonemes": 33,
-      "total_phonemes": 38,
-      "average_error": 4.281624077974202
-    },
-    {
-      "video_id": "b-01",
-      "verdict": "LIKELY SAME PERSON",
-      "confidence": 63.61111111111111,
-      "compatibility_ratio": 0.6944444444444444,
-      "compatible_phonemes": 25,
-      "total_phonemes": 36,
-      "average_error": 5.048971123995058
-    },
-    {
-      "video_id": "b-03",
-      "verdict": "SAME PERSON",
-      "confidence": 88.15789473684211,
-      "compatibility_ratio": 0.7631578947368421,
-      "compatible_phonemes": 29,
-      "total_phonemes": 38,
-      "average_error": 4.766259159979407
-    },
-    {
-      "video_id": "b-05",
-      "verdict": "SAME PERSON",
-      "confidence": 87.8048780487805,
-      "compatibility_ratio": 0.7560975609756098,
-      "compatible_phonemes": 31,
-      "total_phonemes": 41,
-      "average_error": 4.46817010622568
-    },
-    {
-      "video_id": "b-06",
-      "verdict": "LIKELY SAME PERSON",
-      "confidence": 63.61111111111111,
-      "compatibility_ratio": 0.6944444444444444,
-      "compatible_phonemes": 25,
-      "total_phonemes": 36,
-      "average_error": 4.827392534155228
-    },
-    {
-      "video_id": "b-07",
-      "verdict": "SAME PERSON",
-      "confidence": 91.02564102564102,
-      "compatibility_ratio": 0.8205128205128205,
-      "compatible_phonemes": 32,
-      "total_phonemes": 39,
-      "average_error": 4.204203497009369
-    },
-    {
-      "video_id": "b-08",
-      "verdict": "UNCERTAIN",
-      "confidence": 31.951219512195124,
-      "compatibility_ratio": 0.43902439024390244,
-      "compatible_phonemes": 18,
-      "total_phonemes": 41,
-      "average_error": 5.674976319398107
-    },
-    {
-      "video_id": "b-15",
+      "video_id": "t-00",
       "verdict": "LIKELY SAME PERSON",
       "confidence": 58.07692307692308,
       "compatibility_ratio": 0.6153846153846154,
       "compatible_phonemes": 24,
       "total_phonemes": 39,
-      "average_error": 5.284338008793238
+      "average_error": 4.8656809787664885
+    },
+    {
+      "video_id": "t-01",
+      "verdict": "UNCERTAIN",
+      "confidence": 29.736842105263158,
+      "compatibility_ratio": 0.39473684210526316,
+      "compatible_phonemes": 15,
+      "total_phonemes": 38,
+      "average_error": 5.5010500273069
+    },
+    {
+      "video_id": "t-02",
+      "verdict": "SAME PERSON",
+      "confidence": 85.0,
+      "compatibility_ratio": 0.7,
+      "compatible_phonemes": 21,
+      "total_phonemes": 30,
+      "average_error": 4.83006794715456
+    },
+    {
+      "video_id": "t-03",
+      "verdict": "LIKELY SAME PERSON",
+      "confidence": 52.1875,
+      "compatibility_ratio": 0.53125,
+      "compatible_phonemes": 17,
+      "total_phonemes": 32,
+      "average_error": 5.2541811599519885
+    },
+    {
+      "video_id": "t-04",
+      "verdict": "LIKELY SAME PERSON",
+      "confidence": 62.352941176470594,
+      "compatibility_ratio": 0.6764705882352942,
+      "compatible_phonemes": 23,
+      "total_phonemes": 34,
+      "average_error": 5.006529362159091
+    },
+    {
+      "video_id": "t-06",
+      "verdict": "SAME PERSON",
+      "confidence": 91.25,
+      "compatibility_ratio": 0.825,
+      "compatible_phonemes": 33,
+      "total_phonemes": 40,
+      "average_error": 4.23717029056513
+    },
+    {
+      "video_id": "t-07",
+      "verdict": "SAME PERSON",
+      "confidence": 87.8048780487805,
+      "compatibility_ratio": 0.7560975609756098,
+      "compatible_phonemes": 31,
+      "total_phonemes": 41,
+      "average_error": 4.5126845951672285
+    },
+    {
+      "video_id": "t-08",
+      "verdict": "LIKELY SAME PERSON",
+      "confidence": 57.0,
+      "compatibility_ratio": 0.6,
+      "compatible_phonemes": 24,
+      "total_phonemes": 40,
+      "average_error": 5.039715759751846
+    },
+    {
+      "video_id": "t-15",
+      "verdict": "SAME PERSON",
+      "confidence": 92.1875,
+      "compatibility_ratio": 0.84375,
+      "compatible_phonemes": 27,
+      "total_phonemes": 32,
+      "average_error": 4.4777465120501745
     }
   ],
-  "reference_samples": 6,
-  "reference_folder": "../dataset/trump_biden/biden",
-  "test_folder": "../dataset/trump_biden/biden"
+  "reference_samples": 5,
+  "reference_folder": "../dataset/trump_biden/trump",
+  "test_folder": "../dataset/trump_biden/trump"
 }

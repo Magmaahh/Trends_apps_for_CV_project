@@ -200,7 +200,7 @@ def load_embeddings_from_folder(
         transcript_path = transcript_base / f"{video_id}.txt"
         
         if not transcript_path.exists():
-            print(f"  ⚠️  {video_id}: Transcript not found, skipping")
+            print(f"    [SKIP] - {video_id}: Transcript not found, skipping")
             continue
         
         # Get processed paths
@@ -209,7 +209,7 @@ def load_embeddings_from_folder(
         # Check if already processed
         if not check_processed(paths):
             if not auto_preprocess:
-                print(f"  ⏭️  {video_id}: Not processed, skipping")
+                print(f"    [SKIP] - {video_id}: Not processed, skipping")
                 continue
             
             # Preprocess
@@ -337,10 +337,10 @@ def end_to_end_verification(
         audio_emb, video_emb = load_single_video_embeddings(video_path, processed_base)
         
         if not audio_emb or not video_emb:
-            print(f"  ⏭️  {video_id}: Not processed, skipping")
+            print(f"    [SKIP] - {video_id}: Not processed, skipping")
             continue
         
-        print(f"\n  📹 Testing {video_id}...")
+        print(f"\n  Testing {video_id}...")
         
         # Verify this single video (silently)
         import io
@@ -367,8 +367,7 @@ def end_to_end_verification(
         all_confidences.append(result["confidence"])
         
         # Print summary for this video
-        status = "🟢" if result["confidence"] > 50 else "🟡" if result["confidence"] > 25 else "🔴"
-        print(f"     {status} {result['verdict']}: {result['confidence']:.1f}% ({result['compatible_phonemes']}/{result['total_phonemes']} phonemes)")
+        print(f"    [{result['verdict']}] - {result['confidence']:.1f}% ({result['compatible_phonemes']}/{result['total_phonemes']} phonemes)")
     
     if not per_video_results:
         print("No videos tested")
